@@ -150,10 +150,10 @@ agent-orchestrator/
 
 ```bash
 # 全68エージェント
-curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash
 
 # 選択インストール
-curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar ceo
+curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar ceo
 
 # MCP付きインストール
 ./install.sh --with-mcp

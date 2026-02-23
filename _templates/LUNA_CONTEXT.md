@@ -160,8 +160,8 @@ Luna は2つの独立したサービスで構成される。**データは絶対
 ### リポジトリ
 
 - **Luna-company org は参照のみ**。push / commit / ファイル編集は禁止
-- 開発は luna-matching org で行う
-- Luna-company のコードを luna-matching にコピーして公開しない
+- 開発は hinominant org で行う
+- Luna-company のコードを hinominant にコピーして公開しない
 
 ### 決済
 

@@ -12,10 +12,10 @@
 
 ```bash
 # 全68エージェントをインストール
-curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash
 
 # よく使うエージェントのみ
-curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar scout
+curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar scout
 
 # MCP連携付き
 ./install.sh --with-mcp
@@ -73,7 +73,7 @@ ls .claude/agents/  # エージェントファイルが存在するか確認
 
 ファイルがなければ再インストール:
 ```bash
-curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash
 ```
 
 ### コンテキストが切れた

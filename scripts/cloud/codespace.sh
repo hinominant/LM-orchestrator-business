@@ -296,7 +296,7 @@ Machine Types:
   large    largePremiumLinux (8 vCPU, 32GB RAM, $0.72/hr) *プランにより利用不可の場合あり
 
 Examples:
-  cs create --repo luna-matching/lros --machine standard
+  cs create --repo hinominant/lros --machine standard
   cs run "cd /workspaces/lros && npm run build"
   cs ssh
   cs status
