@@ -355,4 +355,4 @@ AIは「質問に答えてくれる便利ツール」から「一緒に仕事を
 
 ---
 
-> このシステムは [hinominant/agent-orchestrator](https://github.com/hinominant/agent-orchestrator) で公開されています。
+> このシステムは [Luna-company/agent-orchestrator](https://github.com/Luna-company/agent-orchestrator) で公開されています。

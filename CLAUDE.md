@@ -157,10 +157,10 @@ agent-orchestrator/
 
 ```bash
 # 全68エージェント
-curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/Luna-company/agent-orchestrator/main/install.sh | bash
 
 # 選択インストール
-curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar ceo
+curl -sL https://raw.githubusercontent.com/Luna-company/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar ceo
 
 # MCP付きインストール
 ./install.sh --with-mcp
@@ -181,6 +181,8 @@ curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/in
 8. **Memory is persistent** - 学習内容を即座に永続化、毎セッション蓄積
 9. **Self-maintaining** - メモリ・ログの定期メンテナンスで品質を維持
 10. **Cloud-first execution** - 重い処理はGitHub Codespacesへ自動ルーティング（ルールは `_common/CLOUD_ROUTING.md`、CLIは `scripts/cloud/codespace.sh`）
+11. **Simplicity first** - 最小影響コードを強制。過剰設計より3行の重複を許容する
+12. **Root cause only** - 一時的修正禁止。根本原因を見つけて直す
 
 ## Contributing
 

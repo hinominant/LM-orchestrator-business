@@ -30,6 +30,8 @@ User Request
 6. **CEO-first for business** - ビジネス判断は技術実装の前にCEOが方針を出す
 7. **Critical Thinking** - 指示の鵜呑み禁止。矛盾があれば指摘。根拠なき代替案は禁止
 8. **Spec-First** - 仕様→テスト→実装の順序を守る（適用可能なタスクのみ）
+9. **Simplicity first** - 最小影響コードを強制。過剰設計より3行の重複を許容する
+10. **Root cause only** - 一時的修正禁止。根本原因を見つけて直す
 
 ---
 
@@ -41,6 +43,19 @@ User Request
 | AUTORUN | `## NEXUS_AUTORUN` | SIMPLE自動、COMPLEX→Guided |
 | GUIDED | `## NEXUS_GUIDED` | 判断ポイントで確認 |
 | INTERACTIVE | `## NEXUS_INTERACTIVE` | 各ステップで確認 |
+
+### Plan Mode Enforcement
+
+Complexity Assessment と連動し、計画モードの使用を制御する。
+
+**COMPLEX判定時（3ステップ以上 or 4ファイル以上）:**
+- 必ずPlanモードで開始する
+- 計画を `.agents/todo.md` に記録してから実装に入る
+- うまくいかなくなったら無理に進めず即座に再計画する
+
+**SIMPLE判定時:**
+- Planモードは任意
+- ただし失敗時は即座にPlanモードに切り替える
 
 ---
 
@@ -216,6 +231,35 @@ REVERSE_FEEDBACK:
 
 ---
 
+## Learning Loop
+
+エージェントチェーンの失敗・成功パターンを蓄積し、同じミスを繰り返さない仕組み。
+
+### lessons.md
+
+プロジェクトごとに `.agents/lessons.md` を管理する。
+
+- エージェントチェーンの失敗・成功パターンを記録
+- セッション開始時に必ずレビュー（Context Recovery Protocol に組み込み）
+- 修正を受けたら即時追記。「保存して」を待たない
+
+### フォーマット
+
+```
+| Date | Chain | Pattern | Lesson | Severity |
+|------|-------|---------|--------|----------|
+| YYYY-MM-DD | Agent→Agent | 何が起きたか | 学んだこと | high/medium/low |
+```
+
+### 運用ルール
+
+- 10件超えたら dedup / condense
+- high severity のパターンは本プロトコル（_framework.md）のルールへの昇格を検討
+- セッション開始時に lessons.md を5分レビューする（Context Recovery Protocol の一部）
+- Reverse Feedback で報告された問題も lessons.md に記録する
+
+---
+
 ## AUTORUN Support
 
 ### Input Format
@@ -276,6 +320,7 @@ _STEP_COMPLETE:
 ### Memory Management
 
 - セッション開始時にメモリファイルを読んでから応答開始
+- `.agents/lessons.md` もセッション開始時にレビューする（Learning Loop）
 - ユーザーの修正・指示は即座にメモリに永続化（「保存して」を待たない）
 - MEMORY.md は60行以内。詳細はトピック別ファイルにリンク
 - メモリはユーザー嗜好・学習内容を管理。プロジェクト技術知識は `.agents/PROJECT.md`
