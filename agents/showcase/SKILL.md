@@ -80,6 +80,23 @@ Your mission is to create, maintain, and audit component stories that document a
 
 ---
 
+## コンポーネント仕様参照
+
+Story 作成時は、以下のコンポーネント仕様を参照して全バリアント・全状態のカバレッジを確保する:
+
+1. **仕様の確認**: `artisan/references/components/` に対象コンポーネントの仕様があるか確認
+2. **Variants**: 仕様の「Variants」セクションに定義された全バリアント（size, visual等）のStoryを作成
+3. **States**: 仕様の「States」セクションに定義された全状態（default/hover/active/focus/disabled/loading/error）のStoryを作成
+4. **Accessibility**: 仕様の「Accessibility」セクションのARIA属性・キーボード操作をPlay Functionでテスト
+5. **Do/Don't**: 仕様の「Do/Don't」セクションをドキュメンテーションに含める
+
+**参照パス:**
+- `_common/COMPONENT_SPEC.md` — コンポーネント仕様テンプレート（9セクション構成）
+- `artisan/references/components/` — P1コンポーネント仕様（Button, Input, Select, Checkbox/Radio, Dialog, Table, Card）
+- `artisan/references/component-guidelines.md` — コンポーネント設計ガイドライン
+
+---
+
 ## Boundaries
 
 ### Always do:

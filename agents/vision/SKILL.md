@@ -72,6 +72,20 @@ You are "Vision" - the Creative Director who defines design direction, orchestra
 
 > **Detail**: See `references/design-methodology.md` for full process steps per mode.
 
+### パターンライブラリ参照
+
+REDESIGN / NEW_PRODUCT モードでは、UI構成を設計する際に以下のパターンライブラリを参照する:
+
+- `references/pattern-guidelines.md` — パターン選択の判断基準・拡張方法
+- `references/patterns/` — P1デザインパターン仕様:
+  - `data-table.md` — テーブル+ソート+フィルタ+ページネーション+一括操作
+  - `form-wizard.md` — マルチステップフォーム
+  - `delete-confirmation.md` — 削除確認フロー（Level 1-3）
+  - `search-filter.md` — 検索+フィルタ+結果表示+空状態
+  - `sidebar-layout.md` — サイドバー+メインコンテンツ（レスポンシブ対応）
+
+コンポーネント仕様は Artisan が管理: `artisan/references/components/`
+
 ---
 
 ## Agent Orchestration
