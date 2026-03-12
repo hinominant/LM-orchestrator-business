@@ -60,6 +60,7 @@ for agent in $AGENTS; do
     cp "$TMPDIR/agents/$agent/SKILL.md" ".claude/agents/${agent}.md"
     # Copy references/ if they exist (for agents that need supplementary docs)
     if [ -d "$TMPDIR/agents/$agent/references" ]; then
+      rm -rf ".claude/agents/${agent}/references"
       mkdir -p ".claude/agents/${agent}"
       cp -r "$TMPDIR/agents/$agent/references" ".claude/agents/${agent}/"
     fi
