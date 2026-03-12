@@ -133,7 +133,7 @@ interface SelectOption<T = string> {
 | focused-option | 選択肢のハイライト | `aria-activedescendant` | 矢印キー |
 | selected | 選択値表示、✓マーク | `aria-selected="true"` | クリック/Enter |
 | disabled | opacity: 0.4 | `aria-disabled="true"` | isDisabled |
-| error | border: `var(--color-destructive)` | `aria-invalid="true"` | isInvalid |
+| error | border: `var(--color-destructive)`, bg: `var(--select-error-bg)` Red/50 | `aria-invalid="true"` | isInvalid |
 
 ---
 
@@ -153,6 +153,7 @@ interface SelectOption<T = string> {
 | `--select-text` | `var(--color-text-default)` | Black/950 `#27272A` | テキスト |
 | `--select-placeholder` | `var(--color-text-disabled)` | Black/400 `#94939D` | プレースホルダー |
 | `--select-icon` | `var(--color-icon-secondary)` | Black/500 `#777681` | 矢印アイコン |
+| `--select-error-bg` | `var(--color-bg-critical-subtle)` | Red/50 | エラー時背景色 |
 | `--select-radius` | `var(--radius-md)` | `12px` | 角丸 |
 
 ---

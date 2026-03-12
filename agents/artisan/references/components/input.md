@@ -110,7 +110,7 @@ interface InputProps {
 | filled | — | — | 値が入力されている |
 | disabled | opacity: 0.4, bg: `var(--color-muted)` | `aria-disabled="true"` | isDisabled |
 | readOnly | bg: `var(--color-muted)`, border消去 | `aria-readonly="true"` | isReadOnly |
-| error | border: `var(--color-destructive)`, エラーメッセージ表示 | `aria-invalid="true"`, `aria-describedby` | isInvalid |
+| error | border: `var(--color-destructive)`, bg: `var(--input-error-bg)` Red/50, エラーメッセージ表示 | `aria-invalid="true"`, `aria-describedby` | isInvalid |
 | loading | Skeleton表示 or Spinner in suffix | `aria-busy="true"` | 非同期バリデーション中 |
 
 ---
@@ -125,6 +125,7 @@ interface InputProps {
 | `--input-border` | `var(--color-border-default)` | Black/200 `#DADADD` | ボーダー |
 | `--input-border-focus` | `var(--color-border-emphasis)` | Brand/600 `#5538EE` | フォーカス時ボーダー |
 | `--input-border-error` | `var(--color-border-critical)` | Red/600 `#FF001F` | エラー時ボーダー |
+| `--input-error-bg` | `var(--color-bg-critical-subtle)` | Red/50 | エラー時背景色 |
 | `--input-text` | `var(--color-text-default)` | Black/950 `#27272A` | 入力テキスト |
 | `--input-placeholder` | `var(--color-text-disabled)` | Black/400 `#94939D` | プレースホルダー |
 | `--input-label` | `var(--color-text-default)` | Black/950 `#27272A` | ラベル |

@@ -33,9 +33,9 @@
 ```typescript
 interface ButtonProps {
   /** 視覚スタイル */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'destructive-primary' | 'destructive-secondary';
   /** サイズ */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'S' | 'M' | 'L';
   /** 無効状態 */
   isDisabled?: boolean;
   /** 読み込み中 */
@@ -57,7 +57,7 @@ interface ButtonProps {
 }
 ```
 
-**デフォルト値:** `variant="primary"`, `size="md"`, `type="button"`
+**デフォルト値:** `variant="primary"`, `size="M"`, `type="button"`
 
 ---
 
@@ -65,11 +65,11 @@ interface ButtonProps {
 
 ### Size
 
-| Size | Height | Font Size | Padding (Y/X) | Icon Size | Min Width | Use Case |
-|------|--------|-----------|----------------|-----------|-----------|----------|
-| sm | 32px / `var(--size-8)` | 14px / `var(--font-size-sm)` | 6px 12px | 16px | 64px | テーブル内、インラインアクション |
-| md | 40px / `var(--size-10)` | 16px / `var(--font-size-base)` | 10px 16px | 20px | 80px | 標準操作 |
-| lg | 48px / `var(--size-12)` | 18px / `var(--font-size-lg)` | 12px 24px | 24px | 96px | CTA、モバイルタッチターゲット |
+| Size | Height | Font Size | Padding (Y/X) | Icon Size | Width (icon有/無) | Use Case |
+|------|--------|-----------|----------------|-----------|-------------------|----------|
+| S | 32px | 14px / `var(--font-size-sm)` | 6px 12px | 16px | 94px / 72px | テーブル内、インラインアクション |
+| M | 48px | 16px / `var(--font-size-base)` | 10px 16px | 20px | 120px / 96px | 標準操作 |
+| L | 56px | 18px / `var(--font-size-lg)` | 12px 24px | 24px | 140px / 112px | CTA、モバイルタッチターゲット |
 
 ### Visual
 
@@ -77,15 +77,15 @@ interface ButtonProps {
 |---------|-----------|------|--------|----------|
 | primary | `bg-emphasis` Brand/600 `#5538EE` | `text-inverse` `#FFFFFF` | none | 主要アクション（1画面に1つ） |
 | secondary | `bg-default` `#FFFFFF` | `text-default` `#27272A` | `border-default` `#DADADD` | 補助アクション |
-| ghost | transparent | `text-default` `#27272A` | none | 低優先度アクション、ツールバー |
-| danger | `bg-critical` Red/600 `#FF001F` | `text-inverse` `#FFFFFF` | none | 破壊的操作（削除、取消） |
+| destructive-primary | `bg-critical` Red/600 `#FF001F` | `text-inverse` `#FFFFFF` | none | 破壊的操作の主要ボタン（削除確認等） |
+| destructive-secondary | `bg-default` `#FFFFFF` | `text-critical` Red/600 `#FF001F` | `border-critical` Red/600 `#FF001F` | 破壊的操作の補助ボタン（キャンセル横等） |
 
 ### Icon-Only
 
 - `isIconOnly=true` 時、ラベル非表示
 - `aria-label` 必須
 - border-radius を `var(--radius-full)` に変更（円形）
-- padding を均等に（sm: 6px, md: 10px, lg: 12px）
+- padding を均等に（S: 6px, M: 10px, L: 12px）
 
 ---
 
@@ -116,10 +116,12 @@ interface ButtonProps {
 | `--btn-secondary-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | Secondary背景 |
 | `--btn-secondary-border` | `var(--color-border-default)` | Black/200 `#DADADD` | Secondaryボーダー |
 | `--btn-secondary-text` | `var(--color-text-default)` | Black/950 `#27272A` | Secondaryテキスト |
-| `--btn-ghost-hover-bg` | `var(--color-bg-interactive)` | Black/100 `#EFEEF0` | Ghostホバー背景 |
-| `--btn-danger-bg` | `var(--color-bg-critical)` | Red/600 `#FF001F` | Danger背景 |
-| `--btn-danger-hover-bg` | `var(--color-bg-critical-interactive)` | Red/700 `#D7001A` | Dangerホバー |
-| `--btn-danger-text` | `var(--color-text-inverse)` | Black/0 `#FFFFFF` | Dangerテキスト |
+| `--btn-destructive-primary-bg` | `var(--color-bg-critical)` | Red/600 `#FF001F` | Destructive Primary背景 |
+| `--btn-destructive-primary-hover-bg` | `var(--color-bg-critical-interactive)` | Red/700 `#D7001A` | Destructive Primaryホバー |
+| `--btn-destructive-primary-text` | `var(--color-text-inverse)` | Black/0 `#FFFFFF` | Destructive Primaryテキスト |
+| `--btn-destructive-secondary-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | Destructive Secondary背景 |
+| `--btn-destructive-secondary-border` | `var(--color-border-critical)` | Red/600 `#FF001F` | Destructive Secondaryボーダー |
+| `--btn-destructive-secondary-text` | `var(--color-text-critical)` | Red/600 `#FF001F` | Destructive Secondaryテキスト |
 | `--btn-disabled-bg` | `var(--color-bg-disabled)` | Black/200 `#DADADD` | 無効背景 |
 | `--btn-disabled-text` | `var(--color-text-disabled)` | Black/400 `#94939D` | 無効テキスト |
 | `--btn-radius` | `var(--radius-md)` | `12px` | 角丸 |
@@ -149,8 +151,9 @@ interface ButtonProps {
 
 ### Color Contrast
 - primary: 白テキスト on プライマリカラー → 4.5:1 以上
-- ghost: テキスト on 背景 → 4.5:1 以上
-- danger: 白テキスト on 赤系 → 4.5:1 以上
+- secondary: テキスト on 背景 → 4.5:1 以上
+- destructive-primary: 白テキスト on 赤系 → 4.5:1 以上
+- destructive-secondary: 赤テキスト on 白背景 → 4.5:1 以上
 
 ---
 

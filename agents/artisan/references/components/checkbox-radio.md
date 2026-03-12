@@ -150,7 +150,8 @@ interface RadioGroupProps {
 | focus | focus-ring | focus-ring | — |
 | disabled | opacity: 0.4 | opacity: 0.4 | `aria-disabled="true"` |
 | disabled + checked | ✓入り、opacity: 0.4 | ●入り、opacity: 0.4 | `aria-disabled="true"`, `aria-checked="true"` |
-| error | border: destructive | border: destructive | `aria-invalid="true"` |
+| error (unchecked) | border: `var(--color-border-critical)` Red、コントロール背景は白 | border: `var(--color-border-critical)` Red、コントロール背景は白 | `aria-invalid="true"` |
+| error (checked) | ✓入り□、bg: `var(--color-bg-critical)` Red、border: Red | ●入り○、bg: `var(--color-bg-critical)` Red、border: Red | `aria-invalid="true"`, `aria-checked="true"` |
 
 ---
 
@@ -165,6 +166,8 @@ interface RadioGroupProps {
 | `--checkbox-checked-icon` | `var(--color-icon-inverse)` | Black/0 `#FFFFFF` | ✓/●の色 |
 | `--checkbox-label-text` | `var(--color-text-default)` | Black/950 `#27272A` | ラベルテキスト |
 | `--checkbox-disabled-bg` | `var(--color-bg-disabled)` | Black/200 `#DADADD` | 無効背景 |
+| `--checkbox-error-border` | `var(--color-border-critical)` | Red/600 `#FF001F` | エラー時ボーダー |
+| `--checkbox-error-checked-bg` | `var(--color-bg-critical)` | Red/600 `#FF001F` | エラー+チェック時背景 |
 | `--checkbox-radius` | `var(--radius-sm)` | `8px` | Checkbox角丸 |
 | `--radio-radius` | `var(--radius-full)` | `9999px` | Radio角丸（円形） |
 | `--checkbox-label-gap` | `var(--space-sm)` | `8px` | コントロール-ラベル間 |
