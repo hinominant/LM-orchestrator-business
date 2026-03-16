@@ -101,3 +101,23 @@ $ARGUMENTS
 - モバイルサイズでの表示確認
 - コントラスト比の確認
 - 一貫性の確認（同じ要素が同じスタイルか）
+
+### Step 5: コンポーネント仕様参照
+
+実装するコンポーネントが以下に仕様定義されている場合、仕様に従って実装する:
+
+- `_common/COMPONENT_SPEC.md` — コンポーネント仕様の標準テンプレート
+- `agents/artisan/references/components/` — P1コンポーネント仕様（Button, Input, Select, Checkbox/Radio, Dialog, Table, Card）
+- `agents/artisan/references/component-guidelines.md` — コンポーネント設計の原則・命名規則・ファイル構成
+
+**パターン参照（複数コンポーネントの組み合わせ時）:**
+- `agents/vision/references/patterns/` — デザインパターン仕様（DataTable, FormWizard, DeleteConfirmation, SearchFilter, SidebarLayout）
+- `agents/vision/references/pattern-guidelines.md` — パターン選択の判断基準
+
+### Step 6: コンテンツ品質チェック
+
+UIテキスト（ラベル・エラーメッセージ・確認ダイアログ等）を以下のガイドラインに照合する:
+
+- `agents/palette/references/content-guidelines-ja.md` — 日本語UIコンテンツガイドライン（文体・ボタンラベル・エラーメッセージ・日付フォーマット等）
+- `agents/palette/references/terminology-glossary.md` — UI用語辞書テンプレート
+- `agents/palette/references/ux-writing-patterns.md` — 汎用UXライティングパターン

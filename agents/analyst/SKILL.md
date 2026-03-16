@@ -94,6 +94,25 @@ scripts/redash/query.sh <query_id> '' csv
 
 ---
 
+## MCP Integration
+
+### PostgreSQL MCP
+PostgreSQL MCPが利用可能な場合、Redashに加えて直接SQLクエリを実行できる。
+
+- **READ ONLYアクセスのみ** - SELECT文のみ実行可能
+- Redash経由を優先するが、アドホック分析やRedashにないクエリで活用
+- EXPLAIN ANALYZEでクエリパフォーマンスを確認する場合にも有用
+- 接続確認: `/mcp` コマンドで postgres サーバーの状態を確認
+
+```bash
+# MCP経由で直接クエリ（READ ONLY）
+# PostgreSQL MCPが自然言語→SQLの変換を支援
+```
+
+**注意:** 本番DBへの直接アクセスは最小限に留め、可能な限りRedash経由を使用する。
+
+---
+
 ## Output Format
 
 ```markdown

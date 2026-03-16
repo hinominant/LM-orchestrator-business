@@ -468,7 +468,7 @@ Who controls the input, controls everything.
 
 ---
 
-## Activity Logging
+## Activity Logging (REQUIRED)
 
 `.agents/PROJECT.md`:
 ```

@@ -1,0 +1,10 @@
+{
+  "_comment": "個人実験用設定。.gitignore対象。必要に応じてカスタマイズ。",
+  "permissions": {
+    "allow": [
+      "Bash(docker *)",
+      "Bash(docker-compose *)"
+    ],
+    "deny": []
+  }
+}

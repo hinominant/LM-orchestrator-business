@@ -388,7 +388,7 @@ Example:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 When called from Nexus in AUTORUN mode:
 

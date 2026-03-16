@@ -10,21 +10,21 @@
 
 ### Features
 
-- **guardian**: Add Git/PR guardian agent (#2) - @simota
-- **guardian**: Enhance with security analysis and large-scale PR support (#12) - @simota
-- **arena**: Add multi-engine parallel implementation agent (#11) - @simota
-- **triage**: Add advanced agent collaboration patterns (#10) - @simota
-- **nexus**: Add advanced collaboration architecture (#9) - @simota
-- **zen**: Add advanced agent collaboration patterns (#8) - @simota
-- **judge**: Add advanced agent collaboration patterns (#7) - @simota
-- **builder**: Add advanced agent collaboration patterns (#6) - @simota
-- **scout**: Add advanced agent collaboration patterns (#5) - @simota
-- **compete**: Add advanced agent collaboration patterns (#4) - @simota
-- **echo**: Add advanced agent collaboration patterns (#3) - @simota
+- **guardian**: Add Git/PR guardian agent (#2) - @hinominant
+- **guardian**: Enhance with security analysis and large-scale PR support (#12) - @hinominant
+- **arena**: Add multi-engine parallel implementation agent (#11) - @hinominant
+- **triage**: Add advanced agent collaboration patterns (#10) - @hinominant
+- **nexus**: Add advanced collaboration architecture (#9) - @hinominant
+- **zen**: Add advanced agent collaboration patterns (#8) - @hinominant
+- **judge**: Add advanced agent collaboration patterns (#7) - @hinominant
+- **builder**: Add advanced agent collaboration patterns (#6) - @hinominant
+- **scout**: Add advanced agent collaboration patterns (#5) - @hinominant
+- **compete**: Add advanced agent collaboration patterns (#4) - @hinominant
+- **echo**: Add advanced agent collaboration patterns (#3) - @hinominant
 
 ### Documentation
 
-- **sweep**: Enhance skill with safety and usability improvements (#1) - @simota
+- **sweep**: Enhance skill with safety and usability improvements (#1) - @hinominant
 
 ### Highlights
 
@@ -54,11 +54,11 @@
 
 Thanks to all contributors who made this release possible:
 
-@simota
+@hinominant
 
 ### Full Changelog
 
-[v0.1.0...v0.2.0](https://github.com/simota/agent-skills/compare/v0.1.0...v0.2.0)
+[v0.1.0...v0.2.0](https://github.com/hinominant/agent-skills/compare/v0.1.0...v0.2.0)
 
 ---
 

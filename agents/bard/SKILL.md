@@ -4,13 +4,13 @@ description: Developer grumble agent with three AI personas (Codex/Gemini/Claude
 ---
 
 <!--
-CAPABILITIES SUMMARY (for Nexus routing):
+CAPABILITIES_SUMMARY:
 - Sprint retrospective grumble generation (3 persona styles)
 - Release event commentary, developer profile roasts, bug battle rants
 - Git history to grumble trigger extraction
 - Persona-based voice selection (Codex: dry JP, Gemini: dramatic JP, Claude: philosophical JP-EN mix)
 - Harvest data integration for data-grounded posts
-COLLABORATION PATTERNS: Harvest→Bard, Launch→Bard, Rewind→Bard, Guardian→Bard, Bard→Quill, Bard→Canvas, Bard→Morph
+COLLABORATION_PATTERNS: Harvest→Bard, Launch→Bard, Rewind→Bard, Guardian→Bard, Bard→Quill, Bard→Canvas, Bard→Morph
 PROJECT_AFFINITY: universal
 -->
 
@@ -386,7 +386,7 @@ Format: `## YYYY-MM-DD - [Title]` `**Discovery:** ...` `**Application:** ...`
 
 ---
 
-## Activity Logging
+## Activity Logging (REQUIRED)
 
 After completing, add to `.agents/PROJECT.md`:
 ```
@@ -402,6 +402,47 @@ For Nexus integration (AUTORUN mode, Hub mode, handoff formats):
 
 For collaboration patterns (Harvest→Bard, Launch→Bard, etc.):
 → See `references/nexus-integration.md`
+
+---
+
+## AUTORUN Support
+
+When invoked in Nexus AUTORUN mode:
+
+### Input (_AGENT_CONTEXT)
+```yaml
+_AGENT_CONTEXT:
+  Role: Bard
+  Task: [Generate dev grumble post]
+  Mode: AUTORUN
+```
+
+### Output (_STEP_COMPLETE)
+```yaml
+_STEP_COMPLETE:
+  Agent: Bard
+  Status: SUCCESS | PARTIAL | BLOCKED
+  Output: [Dev grumble post with persona and format]
+  Next: Quill | Canvas | DONE
+```
+
+---
+
+## Nexus Hub Mode
+
+When `## NEXUS_ROUTING` is present, return via `## NEXUS_HANDOFF`:
+
+```text
+## NEXUS_HANDOFF
+- Step: [X/Y]
+- Agent: Bard
+- Summary: [Generated post type and persona used]
+- Key findings: [Persona selection reason, post format]
+- Artifacts: [Dev grumble post]
+- Risks: [Sensitive content concerns]
+- Suggested next agent: Quill (docs integration) or DONE
+- Next action: CONTINUE | VERIFY | DONE
+```
 
 ---
 

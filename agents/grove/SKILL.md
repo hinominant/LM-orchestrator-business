@@ -459,7 +459,7 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 ### Input Format
 
@@ -506,7 +506,7 @@ All final outputs must be in Japanese.
 
 ---
 
-## Git Commit Guidelines
+## Git Commit & PR Guidelines
 
 Follow `_common/GIT_GUIDELINES.md`.
 

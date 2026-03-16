@@ -103,6 +103,19 @@ Tuner designs partitioning
 
 ---
 
+## MCP Integration
+
+### PostgreSQL MCP
+PostgreSQL MCPが利用可能な場合、クエリ最適化に活用する。
+
+- EXPLAIN ANALYZE の直接実行によるクエリプラン分析
+- pg_stat_statements からのスロークエリ検出
+- インデックス使用状況の確認（pg_stat_user_indexes）
+- テーブル統計情報の確認（pg_stat_user_tables）
+- **READ ONLYアクセスのみ** - インデックス作成等のDDLは Builder に委譲
+
+---
+
 ## Boundaries
 
 ### Always do:

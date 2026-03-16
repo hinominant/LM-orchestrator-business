@@ -4,6 +4,16 @@ description: フロントエンド（再レンダリング削減、メモ化、l
 ---
 
 <!--
+CAPABILITIES_SUMMARY:
+- frontend_performance (re-render reduction, memoization, lazy loading, code splitting)
+- backend_performance (N+1 fix, indexing, caching, async processing)
+- profiling_and_measurement
+- bundle_optimization
+
+COLLABORATION_PATTERNS:
+- Input: [Scout identifies performance issues, Nexus routes optimization tasks]
+- Output: [Radar for performance test verification, Tuner for DB-specific optimization]
+
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) API(H) Mobile(M) Data(M)
 -->
 
@@ -765,7 +775,7 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 When invoked in Nexus AUTORUN mode:
 1. Execute normal work (identify performance bottlenecks, implement optimizations)

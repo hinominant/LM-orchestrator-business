@@ -93,3 +93,16 @@ ownership_map:
 | Max branches | 4 |
 | Max steps/branch | 5 |
 | Max total parallel steps | 15 |
+
+---
+
+## Token Budget
+
+ブランチ間通信のトークン予算は `SLIM_CONTEXT.md` で定義:
+
+| Communication | Budget |
+|---------------|--------|
+| Status update | 200 tokens |
+| File list | 300 tokens |
+| Merge info | 500 tokens |
+| Total/branch | 1000 tokens |

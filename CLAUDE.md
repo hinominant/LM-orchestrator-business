@@ -2,7 +2,7 @@
 
 ## Overview
 
-エージェントチーム構築のための中央レジストリリポジトリ。68エージェント体制（simota/agent-skills 65 + Luna独自 3）。27プロトコル + ALICE統合。
+エージェントチーム構築のための中央レジストリリポジトリ。68エージェント体制（simota/agent-skills 65 + Luna独自 3）。27+プロトコル + 6スキル + ALICE（ARIS/LROS/NOVA/Secretary）統合。MCP連携・Cloud実行・Permissions対応。
 
 各プロジェクトに `install.sh` でエージェント定義を配布する。このリポジトリ自体はレジストリであり、直接 clone して使うものではない。
 
@@ -32,6 +32,7 @@ agent-orchestrator/
 │   ├── arena/           # 競争/協力開発
 │   ├── auditor/         # Luna独自: 品質監査・ARIS Audit
 │   ├── atlas/           # アーキテクチャ分析
+│   ├── auditor/         # SPEC準拠監査
 │   ├── bard/            # devグランブル投稿
 │   ├── bolt/            # パフォーマンス改善
 │   ├── bridge/          # ビジネス⇔技術翻訳
@@ -98,7 +99,7 @@ agent-orchestrator/
 │   ├── git-pr-prep.md      # PR準備
 │   ├── diff-analysis.md    # Diff-aware分析
 │   └── aris-feedback.md    # ARIS成功/失敗記録
-├── _common/             # 共通プロトコル（27個）
+├── _common/             # 共通プロトコル（27+）
 │   ├── AUTORUN.md
 │   ├── INTERACTION.md
 │   ├── GUARDRAIL.md
@@ -109,6 +110,8 @@ agent-orchestrator/
 │   ├── MEMORY.md              # メモリ管理プロトコル
 │   ├── AGENT_MEMORY.md        # エージェントスコープメモリ
 │   ├── MAINTENANCE.md         # 定期メンテナンスプロトコル
+│   ├── MCP.md                 # MCP連携プロトコル
+│   ├── CLOUD_ROUTING.md       # Cloud実行ルーティングプロトコル
 │   ├── PROGRESS.md            # 進捗表示プロトコル
 │   ├── WORKFLOW_AUTOMATION.md # ワークフロー自動化プロトコル
 │   ├── CONTEXT_HYGIENE.md     # コンテキスト衛生管理
@@ -116,29 +119,46 @@ agent-orchestrator/
 │   ├── PTC.md                 # Programmatic Tool Calling
 │   ├── TOOL_RISK.md           # ツールリスク管理（3-Hook体制）
 │   ├── MODEL_ROUTING.md       # Bloom Taxonomy モデルルーティング
-│   └── ALICE_INTEGRATION.md   # ALICE統合プロトコル
+│   ├── ALICE_INTEGRATION.md   # ALICE統合プロトコル
+│   ├── CRITICAL_THINKING.md   # 批判的思考プロトコル
+│   ├── CONTEXT_RECOVERY.md    # セッション復帰プロトコル
+│   ├── TEST_POLICY.md         # テストポリシー（SKIP=FAIL）
+│   ├── SPEC_FIRST.md          # 仕様→テスト→実装パイプライン
+│   ├── ESCALATION.md          # 時間ベース3段階エスカレーション
+│   ├── SLIM_CONTEXT.md        # トークン予算管理
+│   └── SKILL_DISCOVERY.md     # ボトムアップ スキル発見
 ├── _templates/          # プロジェクト配布テンプレート
 │   ├── CLAUDE_PROJECT.md  → .claude/agents/_framework.md
 │   ├── PROJECT.md         → .agents/PROJECT.md
 │   ├── LUNA_CONTEXT.md    → .agents/LUNA_CONTEXT.md
 │   ├── SKILL_TEMPLATE.md  # 新エージェント作成用
 │   ├── FRONTMATTER_SPEC.md # Frontmatter YAML仕様書
-│   ├── settings.json       # Hook設定テンプレート
+│   ├── mcp-settings.json  # MCP設定テンプレート
+│   ├── settings.json       # Hook + Permissions設定テンプレート
+│   ├── settings.local.example.json  # 個人用Permissions例
+│   ├── devcontainer.json  # Codespaces devcontainer設定
+│   ├── post-create.sh     # Codespaces初期化スクリプト
 │   └── hooks/             # Hook実装
 │       ├── tool-risk.js    # PreToolUse リスク評価
 │       ├── post-tool-use.js # PostToolUse ログ記録
 │       └── stop-hook.js    # Stop セッションサマリ
 ├── scripts/
+│   ├── cloud/           # Cloud実行基盤（GitHub Codespaces）
+│   │   ├── codespace.sh    # Codespaces CLIラッパー（cs コマンド）
+│   │   └── .env.example    # 設定テンプレート
 │   ├── redash/          # Redash API ツール
 │   │   ├── query.sh
 │   │   └── .env.example
+│   ├── setup-mcp.sh    # MCP一括セットアップ
 │   └── check-drift.sh  # SKILL.md構造ドリフト検出
 ├── docs/                # ドキュメント
 │   ├── AGENT_SELECTION.md  # エージェント選択ガイド
-│   └── QUICKSTART.md       # クイックスタート
+│   ├── QUICKSTART.md       # クイックスタート
+│   ├── FAQ.md              # よくある質問
+│   └── CLOUD_ARCHITECTURE.md # Cloud-first実行基盤アーキテクチャ
 ├── .github/workflows/
 │   └── drift-check.yml  # PR時ドリフトチェックCI
-└── install.sh           # インストーラー
+└── install.sh           # インストーラー（--with-hooks / --with-mcp / --with-permissions対応）
 ```
 
 ## Custom Commands (7)
@@ -183,13 +203,22 @@ ALICE（ARIS/LROS/NOVA/Secretary）統合。詳細は `_common/ALICE_INTEGRATION
 
 ```bash
 # 全68エージェント
-curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash
 
 # 選択インストール
-curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar ceo
+curl -sL https://raw.githubusercontent.com/hinominant/agent-orchestrator/main/install.sh | bash -s -- nexus builder radar ceo
 
 # Hooks付き
 ./install.sh --with-hooks
+
+# MCP付きインストール
+./install.sh --with-mcp
+
+# Permissions付きインストール
+./install.sh --with-permissions
+
+# 全オプション同時
+./install.sh --with-hooks --with-mcp --with-permissions
 ```
 
 ## Core Principles
@@ -203,6 +232,9 @@ curl -sL https://raw.githubusercontent.com/luna-matching/agent-orchestrator/main
 7. **Coordinator never codes** - コーディネーターは計画・委任・レビューに専念
 8. **Memory is persistent** - 学習内容を即座に永続化、毎セッション蓄積
 9. **Self-maintaining** - メモリ・ログの定期メンテナンスで品質を維持
+10. **Cloud-first execution** - 重い処理はGitHub Codespacesへ自動ルーティング（ルールは `_common/CLOUD_ROUTING.md`、CLIは `scripts/cloud/codespace.sh`）
+11. **Simplicity first** - 最小影響コードを強制。過剰設計より3行の重複を許容する
+12. **Root cause only** - 一時的修正禁止。根本原因を見つけて直す
 
 ## Contributing
 

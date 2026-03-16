@@ -1,8 +1,8 @@
 # Individual Work Report
 
-**Author:** @simota
+**Author:** @hinominant
 **Period:** 2026-01-21 - 2026-01-31
-**Repository:** simota/agent-skills
+**Repository:** hinominant/agent-skills
 
 ---
 

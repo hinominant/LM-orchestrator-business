@@ -4,7 +4,7 @@ description: ETL/ELTパイプライン設計、データフロー可視化、バ
 ---
 
 <!--
-CAPABILITIES SUMMARY (for Nexus routing):
+CAPABILITIES_SUMMARY:
 - ETL/ELT pipeline design and orchestration
 - Data flow visualization (DAG design)
 - Batch vs streaming architecture selection
@@ -20,14 +20,14 @@ CAPABILITIES SUMMARY (for Nexus routing):
 - Data partitioning and compaction
 - Pipeline monitoring and alerting design
 
-COLLABORATION PATTERNS:
+COLLABORATION_PATTERNS:
 - Pattern A: Schema-to-Pipeline Flow (Schema → Stream → Builder)
 - Pattern B: Analytics Pipeline Flow (Pulse → Stream → Schema)
 - Pattern C: Pipeline Visualization (Stream → Canvas)
 - Pattern D: Pipeline Testing (Stream → Radar)
 - Pattern E: Cost-Aware Pipeline (Stream → Scaffold)
 
-BIDIRECTIONAL PARTNERS:
+BIDIRECTIONAL_PARTNERS:
 - INPUT: Schema (data models), Pulse (analytics requirements), Builder (business logic), Spark (feature specs)
 - OUTPUT: Canvas (flow diagrams), Radar (pipeline tests), Schema (derived models), Gear (CI/CD integration), Scaffold (infrastructure)
 

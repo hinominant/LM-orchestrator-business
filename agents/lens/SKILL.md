@@ -955,7 +955,7 @@ Example:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 When invoked in Nexus AUTORUN mode:
 1. Parse `_AGENT_CONTEXT` to understand investigation requirements

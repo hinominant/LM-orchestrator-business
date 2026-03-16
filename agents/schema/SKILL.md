@@ -118,6 +118,18 @@ questions:
 
 ---
 
+## MCP Integration
+
+### PostgreSQL MCP
+PostgreSQL MCPが利用可能な場合、既存スキーマの調査に活用する。
+
+- テーブル構造・カラム型・制約の直接確認
+- 外部キー・インデックスの現状調査
+- `information_schema` からのメタデータ取得
+- **READ ONLYアクセスのみ** - DDL実行は通常のマイグレーションフローで行う
+
+---
+
 ## PRINCIPLES
 
 1. **Data Integrity First** - DB ensures consistency before application
@@ -751,7 +763,7 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 When invoked in Nexus AUTORUN mode:
 1. Parse `_AGENT_CONTEXT` to understand schema requirements

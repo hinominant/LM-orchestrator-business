@@ -17,16 +17,22 @@ Layer 2: COMPONENTS (Muse + Forge collaborate)
 ├── Atomic Components (Button, Input, Badge, Icon)
 ├── Molecular Components (Card, Form Field, List Item)
 └── Organism Components (Header, Sidebar, Modal)
+└── → Spec: artisan/references/components/ (P1仕様)
+└── → Template: _common/COMPONENT_SPEC.md
 
 Layer 3: PATTERNS (Muse + Artisan collaborate)
 ├── Layout Patterns (Grid, Stack, Cluster)
 ├── Interaction Patterns (Navigation, Forms, Feedback)
 └── Composition Patterns (Page templates)
+└── → Spec: vision/references/patterns/ (P1パターン)
+└── → Guide: vision/references/pattern-guidelines.md
 
 Layer 4: DOCUMENTATION (Muse + Showcase collaborate)
 ├── Token Reference
 ├── Component Catalog
 ├── Usage Guidelines
+│   └── → 日本語: palette/references/content-guidelines-ja.md
+│   └── → 用語辞書: palette/references/terminology-glossary.md
 └── Brand Guidelines
 ```
 

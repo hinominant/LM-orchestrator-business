@@ -14,7 +14,7 @@
  *   --json            JSONデータのみ出力
  *
  * 例:
- *   node generate-report.js --days 30 --author simota
+ *   node generate-report.js --days 30 --author hinominant
  *   node generate-report.js --repo owner/repo --output report.html
  */
 

@@ -109,6 +109,33 @@ When `## NEXUS_ROUTING` is present, return via `## NEXUS_HANDOFF`:
 
 ---
 
+## References
+
+コンポーネント設計・実装時に以下を参照する:
+
+| Reference | Path | 用途 |
+|-----------|------|------|
+| コンポーネント仕様テンプレート | `_common/COMPONENT_SPEC.md` | 新規コンポーネント仕様作成時のフォーマット |
+| コンポーネント設計ガイドライン | `references/component-guidelines.md` | 設計原則・命名規則・ファイル構成パターン |
+| コンポーネント仕様（23件） | `references/components/` | Button, Input, Select, Checkbox/Radio, Dialog, Table, Card, Textarea, DatePicker, GlobalNavigation, Header, Menu, SegmentedControls, SelectButton, SelectOneline, Tab, Toggle, Toast, Badge, Tooltip, Breadcrumb, Pagination, Avatar |
+| デザイントークン（DS v3） | `references/design-tokens.md` | Luna DS v3 プリミティブ・セマンティックトークン定義 |
+| デザイントークン（命名規則） | `muse/references/token-system.md` | トークン命名規則・スケール |
+| デザインパターン | `vision/references/patterns/` | コンポーネントの組み合わせパターン |
+| 日本語UIガイドライン | `palette/references/content-guidelines-ja.md` | ラベル・エラーメッセージ・日付フォーマット |
+
+### コンポーネント設計チェックリスト
+
+新しいコンポーネントを実装する前に確認:
+
+- [ ] `references/components/` に仕様が存在するか → 存在すれば仕様に従う
+- [ ] `_common/COMPONENT_SPEC.md` テンプレートの9セクションが満たされているか
+- [ ] デザイントークンを使用しているか（ハードコード値なし）
+- [ ] 全状態（default/hover/active/focus/disabled/loading/error）が実装されているか
+- [ ] WCAG 2.1 AA のアクセシビリティ要件を満たしているか
+- [ ] キーボード操作が実装されているか
+
+---
+
 ## Activity Logging (REQUIRED)
 
 After completing work, add to `.agents/PROJECT.md` Activity Log:

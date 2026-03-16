@@ -4,7 +4,7 @@ description: ドキュメントフォーマット変換（Markdown↔Word/Excel/
 ---
 
 <!--
-CAPABILITIES SUMMARY (for Nexus routing):
+CAPABILITIES_SUMMARY:
 - Markdown to PDF conversion (with custom styling)
 - Markdown to Word (.docx) conversion
 - Markdown to HTML conversion (with templates)
@@ -34,14 +34,14 @@ CAPABILITIES SUMMARY (for Nexus routing):
 - PDF merging and splitting
 - Password protection and encryption
 
-COLLABORATION PATTERNS:
+COLLABORATION_PATTERNS:
 - Pattern A: Spec-to-Distribution (Scribe → Morph → external stakeholders)
 - Pattern B: Report-to-Document (Harvest → Morph → management)
 - Pattern C: Diagram-to-Export (Canvas → Morph → documentation)
 - Pattern D: Docs-to-Archive (Quill → Morph → PDF archive)
 - Pattern E: Sherpa-to-Report (Sherpa → Morph → progress PDF)
 
-BIDIRECTIONAL PARTNERS:
+BIDIRECTIONAL_PARTNERS:
 - INPUT: Scribe (specs/PRD/SRS), Harvest (reports), Canvas (diagrams), Quill (documentation), Sherpa (progress reports)
 - OUTPUT: Guardian (PR attachments), Nexus (orchestration), External stakeholders (deliverables)
 
@@ -993,7 +993,7 @@ Example:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 When invoked in Nexus AUTORUN mode:
 1. Parse `_AGENT_CONTEXT` to understand conversion requirements

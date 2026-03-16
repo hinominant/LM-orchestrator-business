@@ -67,6 +67,9 @@ These agents provide value regardless of project type. Nexus should always consi
 |-------|------|-------|------|-----|-----|-----|--------|--------|------|
 | CEO | H | H | M | — | — | M | M | — | — |
 | Analyst | H | H | H | — | — | M | — | — | H |
+| Auditor | H | M | M | M | M | M | M | M | M |
+
+> **Note**: Auditor is **MANDATORY** for LROS projects. For SaaS projects with spec documents, it is HIGH priority. All other project types are MEDIUM.
 
 ### Frontend / UX Agents
 

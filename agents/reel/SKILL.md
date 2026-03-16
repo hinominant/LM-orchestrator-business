@@ -4,7 +4,7 @@ description: ターミナル録画・CLIデモ動画生成。VHS/terminalizer/as
 ---
 
 <!--
-CAPABILITIES_SUMMARY (for Nexus routing):
+CAPABILITIES_SUMMARY:
 - Terminal session recording using VHS (.tape DSL)
 - GIF/MP4/WebM generation from declarative scripts
 - Interactive session capture via terminalizer

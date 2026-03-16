@@ -36,7 +36,7 @@ Bard の Nexus 連携（AUTORUN / Hub Mode）と全 Inbound / Outbound ハンド
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 When invoked in Nexus AUTORUN mode:
 1. Parse `_AGENT_CONTEXT` to understand task scope, constraints, and persona preference
