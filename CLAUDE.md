@@ -1,8 +1,8 @@
-# Hino Orchestrator Framework
+# Goto Orchestrator Framework
 
 ## Overview
 
-エージェントチーム構築のための中央レジストリリポジトリ。68エージェント体制（simota/agent-skills 65 + Luna独自 3）。27+プロトコル + 6スキル + ALICE（ARIS/LROS/NOVA/Secretary）統合。MCP連携・Cloud実行・Permissions対応。
+Claude Code を安全に使うためのエージェントフレームワーク。65エージェント体制。27+プロトコル + 4スキル + Tool Risk Hooks（3-Hook体制）。Security-First設計で、初心者でも安心してClaude Codeを使い始められる。
 
 各プロジェクトに `install.sh` でエージェント定義を配布する。このリポジトリ自体はレジストリであり、直接 clone して使うものではない。
 
@@ -11,10 +11,9 @@
 ## Repository Structure
 
 ```
-hino-orchestrator/
-├── agents/              # エージェント定義（68個）
-│   ├── ceo/             # Luna独自: 意思決定（最上流）
-│   ├── analyst/         # Luna独自: データ分析
+goto-orchestrator/
+├── agents/              # エージェント定義（65個）
+│   ├── analyst/         # データ分析
 │   ├── nexus/           # 統括オーケストレーター
 │   ├── rally/           # 並列オーケストレーター
 │   ├── sherpa/          # タスク分解
@@ -30,9 +29,8 @@ hino-orchestrator/
 │   ├── architect/       # メタデザイナー
 │   ├── anvil/           # CLI/TUI構築
 │   ├── arena/           # 競争/協力開発
-│   ├── auditor/         # Luna独自: 品質監査・ARIS Audit
+│   ├── auditor/         # 品質監査・SPEC準拠監査
 │   ├── atlas/           # アーキテクチャ分析
-│   ├── auditor/         # SPEC準拠監査
 │   ├── bard/            # devグランブル投稿
 │   ├── bolt/            # パフォーマンス改善
 │   ├── bridge/          # ビジネス⇔技術翻訳
@@ -84,21 +82,18 @@ hino-orchestrator/
 │   ├── warden/          # UX品質ゲート
 │   └── (各エージェントに references/ サブディレクトリあり)
 │   └── _base.tmpl       # SKILL.md構造テンプレート
-├── commands/            # カスタムスラッシュコマンド（7個）
+├── commands/            # カスタムスラッシュコマンド（6個）
 │   ├── superpowers.md    # リサーチ→TDD→検証の大規模タスクモード
 │   ├── frontend-design.md # 数値基準付きデザインプロトコル
 │   ├── code-simplifier.md # git diffベースの軽量クリーンアップ
 │   ├── playground.md     # 単一HTMLインタラクティブツール生成
 │   ├── chrome.md         # Playwrightブラウザ操作自動化
-│   ├── pr-review.md     # 5観点構造化PRレビュー
-│   └── retro.md         # 振り返り→ARISフィードバック
-├── skills/              # 再利用可能スキル（6個）
-│   ├── data-retrieval.md   # LROS/Redashデータ取得
+│   └── pr-review.md     # 5観点構造化PRレビュー
+├── skills/              # 再利用可能スキル（4個）
 │   ├── spec-compliance.md  # SPEC準拠チェック
 │   ├── test-coverage.md    # カバレッジ分析
 │   ├── git-pr-prep.md      # PR準備
-│   ├── diff-analysis.md    # Diff-aware分析
-│   └── aris-feedback.md    # ARIS成功/失敗記録
+│   └── diff-analysis.md    # Diff-aware分析
 ├── _common/             # 共通プロトコル（27+）
 │   ├── AUTORUN.md
 │   ├── INTERACTION.md
@@ -119,7 +114,6 @@ hino-orchestrator/
 │   ├── PTC.md                 # Programmatic Tool Calling
 │   ├── TOOL_RISK.md           # ツールリスク管理（3-Hook体制）
 │   ├── MODEL_ROUTING.md       # Bloom Taxonomy モデルルーティング
-│   ├── ALICE_INTEGRATION.md   # ALICE統合プロトコル
 │   ├── CRITICAL_THINKING.md   # 批判的思考プロトコル
 │   ├── CONTEXT_RECOVERY.md    # セッション復帰プロトコル
 │   ├── TEST_POLICY.md         # テストポリシー（SKIP=FAIL）
@@ -130,7 +124,7 @@ hino-orchestrator/
 ├── _templates/          # プロジェクト配布テンプレート
 │   ├── CLAUDE_PROJECT.md  → .claude/agents/_framework.md
 │   ├── PROJECT.md         → .agents/PROJECT.md
-│   ├── LUNA_CONTEXT.md    → .agents/LUNA_CONTEXT.md
+│   ├── PROJECT_CONTEXT.md → .agents/PROJECT_CONTEXT.md
 │   ├── SKILL_TEMPLATE.md  # 新エージェント作成用
 │   ├── FRONTMATTER_SPEC.md # Frontmatter YAML仕様書
 │   ├── mcp-settings.json  # MCP設定テンプレート
@@ -161,7 +155,44 @@ hino-orchestrator/
 └── install.sh           # インストーラー（--with-hooks / --with-mcp / --with-permissions対応）
 ```
 
-## Custom Commands (7)
+## Security-First Design
+
+このフレームワークの最大の特徴。Claude Codeの強力なツール実行能力を、安全に制御する。
+
+### Tool Risk Hooks（3-Hook体制）
+
+ツール実行前にリスクレベルを自動分類し、危険な操作を事前警告する。初心者には `--with-hooks` でのインストールを強く推奨。
+
+| Level | Action | Example |
+|-------|--------|---------|
+| HIGH / BLOCK | ⚠️ 確認ダイアログ / ブロック | `rm -rf`, `git push --force`, `DROP TABLE`, 認証情報の外部送信 |
+| MEDIUM | 説明表示 | `git push`, `npm publish`, ファイル編集 |
+| LOW | サイレント通過 | `git status`, `Read`, `Grep` |
+
+### Secret Protection
+
+- `.env` ファイルを `.gitignore` に自動追加
+- API キー・トークン・認証情報が stdout/ログ/コミット履歴に露出することを防止
+- コード内にシークレットが検出された場合に警告
+
+### Operation Awareness Alerts
+
+破壊的コマンド実行前に明確な日本語警告を表示:
+- `rm -rf` → ⚠️ この操作は破壊的です: ファイル/ディレクトリの完全削除
+- `DROP TABLE` → ⚠️ この操作は破壊的です: テーブルの完全削除
+- `git push --force` → ⚠️ この操作は破壊的です: リモート履歴の強制上書き
+- `npm publish` → ⚠️ この操作は不可逆です: パッケージの公開
+
+### Guardrail Levels（L1-L4）
+
+| Level | Description |
+|-------|-------------|
+| L1 | 基本品質チェック（lint, type check） |
+| L2 | テストカバレッジ確認 |
+| L3 | セキュリティスキャン |
+| L4 | 破壊的操作の最終確認 |
+
+## Custom Commands (6)
 
 エージェント召喚とは異なり、現在のセッションにワークフローモードを適用するスラッシュコマンド。
 
@@ -173,42 +204,28 @@ hino-orchestrator/
 | `/playground` | 外部依存ゼロの単一HTMLツール生成 |
 | `/chrome` | Playwright でブラウザ操作自動化 |
 | `/pr-review` | 5観点（テスト/エラー/型/品質/シンプル化）の構造化レビュー |
-| `/retro` | 振り返り→ARISフィードバック |
 
-## Skills (6)
+## Skills (4)
 
 エージェントから呼び出される再利用可能な手順スキル（原則 haiku で実行）。
 
 | Skill | Purpose |
 |-------|---------|
-| `data-retrieval` | LROS/Redash データ取得 |
 | `spec-compliance` | SPEC準拠チェック |
 | `test-coverage` | カバレッジ分析 |
 | `git-pr-prep` | PR準備 |
 | `diff-analysis` | Diff-aware分析 |
-| `aris-feedback` | ARIS成功/失敗記録 |
-
-## ALICE Integration
-
-ALICE（ARIS/LROS/NOVA/Secretary）統合。詳細は `_common/ALICE_INTEGRATION.md` 参照。
-
-| Component | Role | Agent |
-|-----------|------|-------|
-| ARIS | 判断エンジン | CEO (4-mind), Auditor |
-| LROS | データ基盤 | Analyst (SSoT) |
-| NOVA | 分析エンジン | Analyst |
-| Secretary | 実行エンジン | Nexus |
 
 ## Installation (per-project)
 
 ```bash
-# 全68エージェント
-curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash
+# 全65エージェント（初心者は --with-hooks を推奨）
+curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
 
 # 選択インストール
-curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash -s -- nexus builder radar ceo
+curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks nexus builder radar
 
-# Hooks付き
+# Hooks付き（推奨: ツールリスク分類で安全に使える）
 ./install.sh --with-hooks
 
 # MCP付きインストール
@@ -217,18 +234,18 @@ curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/ins
 # Permissions付きインストール
 ./install.sh --with-permissions
 
-# 全オプション同時
+# 全オプション同時（推奨）
 ./install.sh --with-hooks --with-mcp --with-permissions
 ```
 
 ## Core Principles
 
-1. **CEO-first for business decisions** - ビジネス判断は技術実装の前にCEOが方針を出す
+1. **Security-first** - ツール実行前のリスク分類、シークレット保護、破壊的操作の警告
 2. **Hub-spoke** - 全通信はオーケストレーター経由
 3. **Minimum viable chain** - 必要最小限のエージェント構成
 4. **File ownership is law** - 並列実行時のファイルオーナーシップ厳守
 5. **Fail fast, recover smart** - ガードレール L1-L4
-6. **Context is precious** - `.agents/PROJECT.md` + `.agents/LUNA_CONTEXT.md` で知識共有
+6. **Context is precious** - `.agents/PROJECT.md` + `.agents/PROJECT_CONTEXT.md` で知識共有
 7. **Coordinator never codes** - コーディネーターは計画・委任・レビューに専念
 8. **Memory is persistent** - 学習内容を即座に永続化、毎セッション蓄積
 9. **Self-maintaining** - メモリ・ログの定期メンテナンスで品質を維持

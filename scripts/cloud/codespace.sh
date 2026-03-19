@@ -296,8 +296,8 @@ Machine Types:
   large    largePremiumLinux (8 vCPU, 32GB RAM, $0.72/hr) *プランにより利用不可の場合あり
 
 Examples:
-  cs create --repo hinominant/lros --machine standard
-  cs run "cd /workspaces/lros && npm run build"
+  cs create --repo your-org/your-project --machine standard
+  cs run "cd /workspaces/your-project && npm run build"
   cs ssh
   cs status
   cs stop

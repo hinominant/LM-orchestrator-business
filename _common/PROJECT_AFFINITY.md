@@ -61,15 +61,14 @@ These agents provide value regardless of project type. Nexus should always consi
 | Canvas | Visualization | Diagrams for any architecture |
 | Architect | Agent design | Meta-level, project-agnostic |
 
-### Luna Original Agents
+### Analysis / Audit Agents
 
 | Agent | SaaS | E-com | Dash | CLI | Lib | API | Mobile | Static | Data |
 |-------|------|-------|------|-----|-----|-----|--------|--------|------|
-| CEO | H | H | M | — | — | M | M | — | — |
 | Analyst | H | H | H | — | — | M | — | — | H |
 | Auditor | H | M | M | M | M | M | M | M | M |
 
-> **Note**: Auditor is **MANDATORY** for LROS projects. For SaaS projects with spec documents, it is HIGH priority. All other project types are MEDIUM.
+> **Note**: For SaaS projects with spec documents, Auditor is HIGH priority. All other project types are MEDIUM.
 
 ### Frontend / UX Agents
 
@@ -172,8 +171,6 @@ Must-include (H for SaaS):
   - Radar (testing)
   - Gateway (API design)
   - Schema (user model)
-  - CEO (business decision)
-
 Consider (M for SaaS):
   - Quill (API docs)
   - Stream (event logging)
@@ -205,7 +202,6 @@ Skip (— for CLI):
   - Artisan (frontend)
   - Growth (SEO/CRO)
   - Retain (engagement)
-  - CEO (business decision)
 ```
 
 ---

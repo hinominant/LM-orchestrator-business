@@ -1,7 +1,24 @@
 {
+  "_comment": "Goto Orchestrator — セキュリティ重視の推奨設定。install.sh --with-permissions で配布。",
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "denyRead": [
+        "~/.aws/credentials",
+        "~/.aws/config",
+        "~/.ssh/id_*",
+        "~/.ssh/config",
+        "~/.gnupg/**",
+        "~/.config/gh/hosts.yml",
+        "~/.netrc"
+      ]
+    }
+  },
   "permissions": {
     "allow": [
-      "Bash(npm *)",
+      "Bash(npm test *)",
+      "Bash(npm run *)",
       "Bash(pnpm *)",
       "Bash(bun *)",
       "Bash(npx *)",
@@ -24,13 +41,13 @@
       "Bash(ls *)",
       "Bash(wc *)",
       "Bash(which *)",
-      "Bash(pwd)",
-      "Bash(curl -s *)"
+      "Bash(pwd)"
     ],
     "deny": [
       "Bash(rm -rf /)",
       "Bash(rm -rf ~)",
       "Bash(rm -rf /*)",
+      "Bash(rm -rf ~/*)",
       "Bash(sudo *)",
       "Bash(chmod 777 *)",
       "Bash(git push --force *)",
@@ -39,7 +56,20 @@
       "Bash(git clean -fd *)",
       "Bash(: > *)",
       "Bash(mkfs *)",
-      "Bash(dd if=*)"
+      "Bash(dd if=*)",
+      "Bash(curl * --data *password*)",
+      "Bash(curl * --data *secret*)",
+      "Bash(curl * --data *token*)",
+      "Bash(curl * -d *password*)",
+      "Bash(curl * -d *secret*)",
+      "Bash(curl * -d *token*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/credentials.json)",
+      "Read(**/.htpasswd)"
     ]
   },
   "hooks": {

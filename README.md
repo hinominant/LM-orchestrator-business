@@ -1,26 +1,69 @@
-# Hino Orchestrator
+# Goto Orchestrator
 
-Claude Code でエージェントチームを構築するためのフレームワーク。
+Claude Code を安全に使うためのエージェントフレームワーク。
 
-各プロジェクトにインストールして使用する。中央リポジトリからエージェント定義を取得し、プロジェクトごとに独立したエージェントチームを構成。
+初心者エンジニアでも安心して Claude Code を活用できるよう、**Security-First** で設計されたエージェントチーム構築フレームワーク。65エージェント + 27+共通プロトコル + Tool Risk Hooks（3-Hook体制）で、強力かつ安全な開発体験を提供する。
 
-[simota/agent-skills](https://github.com/simota/agent-skills) の設計思想をベースに再設計。Luna 独自エージェント（CEO, Analyst, Auditor）を追加した68エージェント体制。27+共通プロトコル + 6スキル + ALICE（ARIS/LROS/NOVA/Secretary）統合。MCP連携・Cloud実行・Permissions・Hooks対応。
+[simota/agent-skills](https://github.com/simota/agent-skills) の設計思想をベースに再設計。MCP連携・Cloud実行・Permissions・Hooks対応。
+
+---
+
+## Security Features
+
+このフレームワークの最大の差別化ポイント。Claude Code は強力だが、初心者が意図せず破壊的操作を実行してしまうリスクがある。Goto Orchestrator はそのリスクを体系的に軽減する。
+
+### Tool Risk Hooks（3-Hook体制）
+
+ツール実行前にリスクレベルを自動分類し、危険な操作には事前警告を表示。**初心者には `--with-hooks` でのインストールを強く推奨。**
+
+| Level | Action | 具体例 |
+|-------|--------|--------|
+| **HIGH / BLOCK** | ⚠️ 確認ダイアログ / ブロック | `rm -rf`, `git push --force`, `DROP TABLE`, 認証情報の外部送信 |
+| **MEDIUM** | 説明を表示 | `git push`, `npm publish`, ファイル編集 |
+| **LOW** | サイレント通過 | `git status`, `Read`, `Grep` |
+
+```
+⚠️ この操作は破壊的です: ファイル/ディレクトリの完全削除
+  コマンド: rm -rf ./dist
+  リスクレベル: HIGH
+  続行しますか？ [y/N]
+```
+
+### Secret Protection（シークレット保護）
+
+- `.env` ファイルを `.gitignore` に自動追加
+- API キー・トークン・認証情報が stdout / ログ / コミット履歴に露出することを防止
+- コード内にハードコードされたシークレットが検出された場合に警告
+
+### Beginner Safety Net（初心者向け安全ネット）
+
+- 各ツールの実行内容を事前に説明
+- 破壊的操作の代わりに、より安全な代替手段を提案
+- Guardrail L1-L4 の段階的な品質・安全チェック
+
+### Guardrail Levels
+
+| Level | 内容 |
+|-------|------|
+| L1 | 基本品質チェック（lint, type check） |
+| L2 | テストカバレッジ確認 |
+| L3 | セキュリティスキャン |
+| L4 | 破壊的操作の最終確認 |
+
+---
 
 ## Install
 
 ```bash
-# 全68エージェントをインストール
-curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash
+# 全65エージェント + Hooks（初心者推奨）
+curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
 
 # 特定のエージェントのみ
-curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash -s -- nexus rally builder radar ceo
-
-# Hooks付き（tool-risk, post-tool-use, stop-hook）
-./install.sh --with-hooks
+curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks nexus rally builder radar
 
 # ローカルクローンから
-git clone https://github.com/hinominant/hino-orchestrator.git /tmp/hino-orchestrator
-cd your-project && /tmp/hino-orchestrator/install.sh
+git clone https://github.com/hinominant/goto-orchestrator.git /tmp/goto-orchestrator
+cd your-project && /tmp/goto-orchestrator/install.sh --with-hooks
 
 # Permissions テンプレート付き
 ./install.sh --with-permissions
@@ -28,7 +71,7 @@ cd your-project && /tmp/hino-orchestrator/install.sh
 # MCP付きインストール
 ./install.sh --with-mcp
 
-# 全オプション同時
+# 全オプション同時（推奨）
 ./install.sh --with-mcp --with-permissions --with-hooks
 ```
 
@@ -41,11 +84,10 @@ your-project/
 ├── .claude/
 │   ├── agents/
 │   │   ├── _framework.md    # フレームワークプロトコル
-│   │   ├── ceo.md            # 意思決定（最上流）
 │   │   ├── nexus.md          # オーケストレーター
 │   │   ├── analyst.md        # データ分析
-│   │   ├── auditor.md         # 品質監査
-│   │   ├── ...               # 他のエージェント（68個）
+│   │   ├── auditor.md        # 品質監査
+│   │   ├── ...               # 他のエージェント（65個）
 │   │   ├── bard/             # references/ を持つエージェント
 │   │   │   └── references/
 │   │   └── atlas/
@@ -56,26 +98,23 @@ your-project/
 │   │   ├── code-simplifier.md # 動作不変のコードクリーンアップ
 │   │   ├── playground.md     # 単一HTML生成
 │   │   ├── chrome.md         # ブラウザ操作自動化
-│   │   ├── pr-review.md     # 多面的PRレビュー
-│   │   └── retro.md         # 振り返り→ARISフィードバック
+│   │   └── pr-review.md     # 多面的PRレビュー
 │   ├── skills/
-│   │   ├── data-retrieval.md # データ取得
 │   │   ├── spec-compliance.md # SPEC準拠チェック
 │   │   ├── test-coverage.md  # カバレッジ分析
 │   │   ├── git-pr-prep.md    # PR準備
-│   │   ├── diff-analysis.md  # Diff分析
-│   │   └── aris-feedback.md  # ARIS記録
+│   │   └── diff-analysis.md  # Diff分析
 │   └── scripts/
 │       └── cloud/
 │           ├── codespace.sh      # Codespaces CLIラッパー
 │           └── .env.example      # 設定テンプレート
-├── ~/.claude/hooks/              # --with-hooks 指定時
+├── ~/.claude/hooks/              # --with-hooks 指定時（推奨）
 │   ├── tool-risk.js             # ツールリスク分類フック
 │   ├── post-tool-use.js         # ツール実行ログ記録
 │   └── stop-hook.js             # セッションサマリ永続化
 ├── .agents/
 │   ├── PROJECT.md            # 共有知識ファイル
-│   ├── LUNA_CONTEXT.md       # ビジネス文脈（CEO参照）
+│   ├── PROJECT_CONTEXT.md    # プロジェクトのビジネス文脈
 │   └── memory/              # エージェントスコープメモリ
 └── CLAUDE.md                 # フレームワーク参照を追記
 ```
@@ -86,9 +125,7 @@ your-project/
 User Request
      |
      v
-  [Nexus] ---- Phase 0: EXECUTIVE_REVIEW
-     |
-     +---> CEO判断が必要？ → [CEO] → 方針・制約を付与
+  [Nexus] ---- Phase 0: RISK_ASSESSMENT（Security-First）
      |
      +---> Sequential: Agent1 → Agent2 → Agent3 (role simulation)
      |
@@ -101,9 +138,9 @@ User Request
                  ┌──────────────────────────┐
                  │  GitHub Repository        │
                  │  (hinominant/             │
-                 │   hino-orchestrator)      │
+                 │   goto-orchestrator)      │
                  │                          │
-                 │  68 agents + references  │
+                 │  65 agents + references  │
                  └────────┬─────────────────┘
                           │
             curl / install.sh
@@ -116,24 +153,23 @@ User Request
      (必要なエージェントを選択)
 ```
 
-## Agents (68)
-
-### Luna Original（独自）
-
-| Agent | Description |
-|-------|-------------|
-| **CEO** | 株式会社LunaのCEO。思想を守りながら市場を創造する意思決定。Go/No-Go判断。ARIS 4-mind統合 |
-| **Analyst** | Redash API でデータ取得→指標定義→誤読防止→示唆出し。LROS SSoT参照 |
-| **Auditor** | 品質監査。プロセス準拠・判断品質・リスク検知。ARIS Audit統合 / LROS ABSOLUTE SPEC準拠監査 |
+## Agents (65)
 
 ### Orchestration（統括）
 
 | Agent | Description |
 |-------|-------------|
-| **Nexus** | 統括オーケストレーター。タスク分類→CEO判定→チェーン設計→自動実行 |
+| **Nexus** | 統括オーケストレーター。タスク分類→チェーン設計→自動実行 |
 | **Sherpa** | タスクを15分以内のAtomic Stepに分解 |
 | **Rally** | TeamCreate/Task APIで複数Claudeインスタンスを並列管理 |
 | **Architect** | 新エージェントのSKILL.md設計・メタデザイン |
+
+### Data / Analysis（データ・分析）
+
+| Agent | Description |
+|-------|-------------|
+| **Analyst** | Redash API でデータ取得→指標定義→誤読防止→示唆出し |
+| **Auditor** | 品質監査。プロセス準拠・判断品質・リスク検知・SPEC準拠監査 |
 
 ### Investigation / Implementation（調査・実装）
 
@@ -281,13 +317,12 @@ User Request
 
 | Protocol | Description |
 |----------|-------------|
-| ALICE_INTEGRATION | ALICE（ARIS/LROS/NOVA/Secretary）統合 |
 | MCP | MCP サーバー連携（Context7/Sentry/Memory/PostgreSQL/Playwright） |
 | CLOUD_ROUTING | 重い処理のGitHub Codespaces自動ルーティング |
 | PROJECT_AFFINITY | エージェント×プロジェクトタイプの親和性マッピング |
 | REVERSE_FEEDBACK | 下流→上流の品質フィードバック |
 
-## Custom Commands (7)
+## Custom Commands (6)
 
 エージェントとは別に、ワークフローモードとして使えるスラッシュコマンド。デフォルトで全てインストールされる。
 
@@ -299,7 +334,6 @@ User Request
 | `/playground` | 外部依存ゼロの単一HTMLツール生成。open コマンドで即確認 | Forge(プロトタイプ全般) に対し、単一ファイル特化 |
 | `/chrome` | Playwrightでブラウザ操作。既存セッション活用、スクショ確認 | Navigator(フルエージェント) の軽量インライン版 |
 | `/pr-review` | テスト/エラー処理/型/品質/シンプル化の5観点で構造化レビュー | Judge(バグ検出特化) に対し、多面的・構造化 |
-| `/retro` | 振り返り→ARISフィードバック。git log + Activity Log から成功/失敗パターン抽出 | Auditor(監査) に対し、定期振り返り特化 |
 
 ```bash
 /superpowers 認証システムをリファクタリングして
@@ -331,12 +365,29 @@ User Request
 | リファクタリング | Zen → Radar |
 | セキュリティ監査 | Sentinel → Probe → Builder → Radar |
 | PR準備 | Guardian → Judge |
-| **ビジネス/戦略** | **CEO → Sherpa → Forge/Builder → Radar** |
-| **データ分析** | **Analyst → CEO（意思決定要時）→ Nexus** |
-| **アーキテクチャ** | **Atlas → Magi → Builder/Scaffold** |
-| **データパイプライン修正** | **Scout → Analyst → Builder → Radar** |
-| **スペック準拠監査** | **Auditor → Builder → Radar** |
-| **大規模修正（監査付き）** | **Sherpa → Builder → Auditor → Radar** |
+| アーキテクチャ | Atlas → Magi → Builder/Scaffold |
+| データ分析 | Analyst → Nexus |
+| データパイプライン修正 | Scout → Analyst → Builder → Radar |
+| スペック準拠監査 | Auditor → Builder → Radar |
+| 大規模修正（監査付き） | Sherpa → Builder → Auditor → Radar |
+
+## Tool Risk Hooks
+
+Claude Code のツール実行前にリスクレベルを自動分類し、危険な操作を事前警告する。3-Hook体制（PreToolUse / PostToolUse / Stop）。**初心者のオンボーディングに最適。**
+
+| Level | Action | Example |
+|-------|--------|---------|
+| HIGH / BLOCK | ⚠️ 確認ダイアログ / ブロック | `rm -rf`, `git push --force`, `DROP TABLE`, 認証情報の外部送信 |
+| MEDIUM | 説明表示 | `git push`, `npm publish`, ファイル編集 |
+| LOW | サイレント通過 | `git status`, `Read`, `Grep` |
+
+```bash
+# インストール（推奨）
+./install.sh --with-hooks
+
+# 経験者向け: 無効化する場合
+# settings.json の hooks.PreToolUse を空配列に
+```
 
 ## Cloud Execution
 
@@ -405,43 +456,6 @@ bash scripts/setup-mcp.sh
 claude mcp add postgres -- npx -y @modelcontextprotocol/server-postgres 'postgresql://user:pass@host:5432/db'
 ```
 
-## Tool Risk Hooks
-
-Claude Code のツール実行前にリスクレベルを自動分類し、危険な操作を事前警告する。3-Hook体制（PreToolUse / PostToolUse / Stop）。初心者のオンボーディングに最適。
-
-| Level | Action | Example |
-|-------|--------|---------|
-| HIGH / BLOCK | 確認ダイアログ / ブロック | `rm -rf`, `git push --force`, `DROP TABLE`, 認証情報の外部送信 |
-| MEDIUM | 説明表示 | `git push`, `npm publish`, ファイル編集 |
-| LOW | サイレント通過 | `git status`, `Read`, `Grep` |
-
-```bash
-# インストール
-./install.sh --with-hooks
-
-# 無効化（経験者向け）
-# settings.json の hooks.PreToolUse を空配列に
-```
-
-## ALICE Integration
-
-ALICE（ARIS/LROS/NOVA/Secretary）統合フレームワーク。詳細は `_common/ALICE_INTEGRATION.md` 参照。
-
-| Component | Role | Integrated Agent |
-|-----------|------|-----------------|
-| **ARIS** | 判断エンジン（4-mind: Founder/Vision/Execution/Audit） | CEO, Auditor |
-| **LROS** | データ基盤（metrics_monthly SSoT） | Analyst |
-| **NOVA** | 分析エンジン | Analyst |
-| **Secretary** | 実行エンジン | Nexus |
-
-### Frontmatter
-
-Tier 1 エージェントは YAML frontmatter で model/permissionMode/maxTurns/memory を指定。仕様は `_templates/FRONTMATTER_SPEC.md` 参照。
-
-### QA Health Score
-
-Radar が8次元加重ルーブリックで品質スコアリング（70+ PASS / 50-69 WARN / <50 FAIL）。
-
 ## Redash Integration
 
 Analyst エージェントが Redash API を使用してデータを取得・分析する。
@@ -463,24 +477,32 @@ scripts/redash/query.sh 42 '' csv              # CSV出力
 
 ```bash
 # コアのみ（軽量）
-install.sh nexus builder radar scout sentinel guardian
+install.sh --with-hooks nexus builder radar scout sentinel guardian
 
 # フルスタック開発
-install.sh nexus rally sherpa builder artisan forge radar sentinel judge zen guardian ceo
+install.sh --with-hooks nexus rally sherpa builder artisan forge radar sentinel judge zen guardian
 
 # データ分析重視
-install.sh nexus analyst ceo pulse experiment researcher
+install.sh --with-hooks nexus analyst pulse experiment researcher
 ```
 
-### ビジネス文脈
+### プロジェクト文脈
 
-`.agents/LUNA_CONTEXT.md` をプロジェクトに合わせてカスタマイズ。
+`.agents/PROJECT_CONTEXT.md` をプロジェクトに合わせてカスタマイズ。プロジェクトのビジネス背景・目標・制約を記載する。
 
 ### エージェント追加
 
 1. `agents/[name]/SKILL.md` を作成（`_templates/SKILL_TEMPLATE.md` 参照）
 2. `install.sh` の `ALL_AGENTS` に追加
 3. `_common/PROJECT_AFFINITY.md` にアフィニティを追記
+
+### Frontmatter
+
+Tier 1 エージェントは YAML frontmatter で model/permissionMode/maxTurns/memory を指定。仕様は `_templates/FRONTMATTER_SPEC.md` 参照。
+
+### QA Health Score
+
+Radar が8次元加重ルーブリックで品質スコアリング（70+ PASS / 50-69 WARN / <50 FAIL）。
 
 ## Documentation
 

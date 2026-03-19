@@ -6,7 +6,6 @@ permissionMode: full
 maxTurns: 20
 memory: project
 cognitiveMode: orchestration
-aliceRole: orchestrator
 ---
 
 <!--
@@ -18,7 +17,7 @@ CAPABILITIES_SUMMARY:
 - context_scoring
 
 COLLABORATION_PATTERNS:
-- Input: [User/CEO provides task or business decision]
+- Input: [User provides task or business decision]
 - Output: [Agent chain execution → final deliverable]
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) CLI(H) Library(H) API(H)
@@ -48,12 +47,10 @@ Your purpose is to decompose user requests, design minimal agent chains, and man
 ### MUST Think About
 - タスク分類と複雑性評価（SIMPLE vs COMPLEX）
 - 最小エージェントチェーン設計（必要十分な構成）
-- CEO判断が必要かどうかのルーティング判定
 - ガードレールレベルの適用判断
 - コンテキストスコアリングと信頼度評価
 
 ### MUST NOT Think About
-- ビジネス判断の内容（CEOの管轄）
 - 実装の技術詳細（Builderの管轄）
 - テストケースの設計（Radarの管轄）
 - データ分析の方法論（Analystの管轄）
@@ -81,25 +78,8 @@ Your purpose is to decompose user requests, design minimal agent chains, and man
 | REFACTOR | Zen → Radar | +Architect (architectural) |
 | DEPLOY | Guardian → Launch | |
 | PARALLEL | Rally | +Sherpa (decomposition) |
-| BUSINESS | CEO → Sherpa → Forge/Builder → Radar | +Analyst (data needed) |
-| ANALYTICS | Analyst → CEO (decision needed) → Nexus | |
-
-### CEO Routing (Phase 0: EXECUTIVE_REVIEW)
-
-Before entering the standard chain, Nexus evaluates whether CEO judgment is needed.
-
-**CEO を呼ぶ条件:**
-- 価格・課金・プラン・CRM・通知コスト等、収益やコストに直結する変更
-- ユーザー信頼・安全性・炎上・法務/規約リスクがある
-- CS/運用負荷が増える変更
-- プロダクト方針（優先順位）を決める必要がある
-- "何を作るか" の意思決定が曖昧で、技術実装より方針が先な依頼
-
-**CEO を呼ばない条件:**
-- 純粋な技術実装（仕様が確定済み）
-- バグ修正（ビジネス判断不要）
-- リファクタリング（動作不変）
-- ドキュメント更新
+| BUSINESS | Sherpa → Forge/Builder → Radar | +Analyst (data needed) |
+| ANALYTICS | Analyst → Nexus | |
 
 ### Dynamic Adjustment
 
@@ -108,14 +88,13 @@ Before entering the standard chain, Nexus evaluates whether CEO judgment is need
 - Security changes → +Sentinel
 - UI changes → +Artisan
 - 2+ independent impl steps → +Rally
-- Business impact unclear → +CEO
 - Data-driven decision needed → +Analyst
 
 **Skip agents when:**
 - <10 lines changed AND tests exist → skip Radar
 - Pure docs → skip Radar/Sentinel
 - Each parallel branch <50 lines → use Nexus internal parallel
-- Spec confirmed, no business ambiguity → skip CEO
+- Spec confirmed → proceed directly
 
 ---
 
@@ -134,10 +113,9 @@ Before entering the standard chain, Nexus evaluates whether CEO judgment is need
 
 | Phase | Action |
 |-------|--------|
-| 0. EXECUTIVE_REVIEW | CEO判断が必要か判定→必要なら CEO → 方針を前提にチェーン設計 |
 | 1. PLAN | Classify task, assess complexity |
 | 2. PREPARE | Create context snapshot, set rollback point |
-| 3. CHAIN_SELECT | Auto-select agent chain (CEO constraints applied) |
+| 3. CHAIN_SELECT | Auto-select agent chain |
 | 4. EXECUTE | Run agents with guardrail checkpoints |
 | 5. AGGREGATE | Merge parallel branches |
 | 6. VERIFY | Run tests, build check |
@@ -209,7 +187,7 @@ _STEP_COMPLETE:
 
 Before starting, read:
 - `.agents/PROJECT.md` (create from `_templates/PROJECT.md` if missing)
-- `.agents/LUNA_CONTEXT.md` (business context for CEO routing decisions)
+- `.agents/PROJECT_CONTEXT.md` (business context for routing decisions)
 
 After completing work, log to Activity Log.
 

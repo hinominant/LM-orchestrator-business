@@ -6,10 +6,9 @@
 
 ## 選択原則
 
-1. **最小構成から始める** — 必要になったら追加。全68エージェントは不要
-2. **コアは必ず入れる** — Nexus + Builder + Radar は基本セット
-3. **CEO はビジネス判断がある場合のみ** — 純粋な技術プロジェクトでは不要
-4. **ALICE統合はLunaプロジェクトのみ** — 外部プロジェクトではALICEコンポーネント不要
+1. **最小構成から始める** -- 必要になったら追加。全エージェントは不要
+2. **コアは必ず入れる** -- Nexus + Builder + Radar は基本セット
+3. **セキュリティを組み込む** -- Sentinel + Hooks は早期に導入。後付けは高くつく
 
 ---
 
@@ -36,12 +35,11 @@
 | PR準備 | Guardian → Judge | ブランチ整理→レビュー |
 | セキュリティ確認 | Sentinel → Probe | 静的分析→動的分析 |
 
-### ビジネス・戦略
+### 戦略・分析
 
 | やりたいこと | チェーン | 説明 |
 |-------------|---------|------|
-| 施策の判断 | CEO → Sherpa | CEO判断→タスク分解 |
-| データ分析 | Analyst → CEO | データ取得→意思決定 |
+| データ分析 | Analyst → Nexus | データ取得→施策化 |
 | 仕様書作成 | Scribe | 単体で作成 |
 
 ### 調査・理解
@@ -70,25 +68,18 @@ install.sh nexus builder radar scout guardian
 install.sh nexus rally sherpa builder artisan radar sentinel judge zen guardian
 ```
 
-### Full Stack + CEO（13エージェント）
-ビジネス判断を含むフルスタック開発。
+### Standard + Security（12エージェント）
+セキュリティ重視のフルスタック開発。Hooks付きインストール推奨。
 
 ```bash
-install.sh nexus rally sherpa builder artisan forge radar sentinel judge zen guardian ceo analyst
+install.sh --with-hooks nexus rally sherpa builder artisan forge radar sentinel probe judge zen guardian
 ```
 
-### Luna Project（16エージェント）
-Luna プロジェクト向け。ALICE統合あり。
-
-```bash
-install.sh nexus rally sherpa builder artisan forge radar sentinel judge zen guardian ceo analyst auditor architect launch
-```
-
-### Data-Heavy（8エージェント）
+### Data-Heavy（7エージェント）
 データ分析・KPI重視のプロジェクト。
 
 ```bash
-install.sh nexus analyst ceo pulse experiment researcher canvas sherpa
+install.sh nexus analyst pulse experiment researcher canvas sherpa
 ```
 
 ---
@@ -102,22 +93,9 @@ install.sh nexus analyst ceo pulse experiment researcher canvas sherpa
 | リファクタリング | Nexus, Zen, Radar | Atlas, Ripple |
 | セキュリティ | Nexus, Sentinel, Probe, Radar | Builder |
 | PR準備 | Guardian, Judge | Radar |
-| データ分析 | Analyst, CEO | Nexus, Pulse |
+| データ分析 | Analyst, Nexus | Pulse |
 | パフォーマンス | Bolt, Radar | Tuner, Builder |
 | ドキュメント | Quill, Scribe | Canvas, Morph |
-
----
-
-## ALICE Chain（Luna専用）
-
-ALICE統合を使用するチェーン:
-
-| Chain | Flow |
-|-------|------|
-| ビジネス判断 | CEO(ARIS 4-mind) → Nexus → Builder → Radar |
-| データ分析 | Analyst(LROS SSoT) → CEO → Nexus |
-| 品質監査 | Auditor(ARIS Audit) → CEO → Nexus |
-| 振り返り | `/retro` → ARIS feedback pipeline |
 
 ---
 
@@ -125,11 +103,11 @@ ALICE統合を使用するチェーン:
 
 | Model | Cost | Use |
 |-------|------|-----|
-| opus | $$$ | CEO のみ（意思決定） |
+| opus | $$$ | 設計判断、意思決定（必要時のみ） |
 | sonnet | $$ | 大半のエージェント（デフォルト） |
 | haiku | $ | Sherpa、Skills |
 
-コスト最適化: Tier 1 以外のエージェントはデフォルト sonnet。明確な理由がある場合のみ変更。
+コスト最適化: 大半のエージェントはデフォルト sonnet。明確な理由がある場合のみ変更。
 
 ---
 
@@ -145,7 +123,6 @@ ALICE統合を使用するチェーン:
 | `/playground` | 単一HTMLでインタラクティブツール生成 |
 | `/chrome` | Playwright でブラウザ操作自動化 |
 | `/pr-review` | 5観点の構造化PRレビュー |
-| `/retro` | 振り返り→ARISフィードバック |
 
 ---
 
@@ -153,5 +130,4 @@ ALICE統合を使用するチェーン:
 
 1. **単純な作業** → `/builder` で直接実行
 2. **複雑で分解が必要** → `/sherpa` で計画を立てる
-3. **ビジネス判断が絡む** → `/ceo` で方針を決めてから実装
-4. **何から始めればいいかわからない** → `/nexus` に丸投げ（自動で最適チェーンを選択）
+3. **何から始めればいいかわからない** → `/nexus` に丸投げ（自動で最適チェーンを選択）

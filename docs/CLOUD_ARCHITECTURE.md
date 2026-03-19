@@ -4,7 +4,7 @@
 
 - Local: Local development machine
 - Problem: 2-3 heavy processes in parallel cause memory pressure and OS freeze
-- Goal: Heavy processing runs on cloud, local stays light (IDE/Browser/Slack only)
+- Goal: Heavy processing runs on cloud, local stays light (IDE/Browser only)
 
 ---
 
@@ -88,7 +88,7 @@ EC2比較（参考）:
 │                         │   gh CLI   │  basic(2c/8G) or standard(4c/16G) │
 │  Claude Code (CLI)      │──────────→ │                              │
 │  IDE / Browser          │            │  Job A: npm run build        │
-│  Slack                  │            │  Job B: pytest               │
+│                         │            │  Job B: pytest               │
 │                         │ ←──────────│  Job C: python train.py      │
 │  Memory: Light usage     │  Results   │                              │
 │  CPU: Light             │            │  Auto-suspend after 30min    │
@@ -139,7 +139,7 @@ cs status
 cs ssh   # Codespace にSSH接続して直接確認
 ```
 
-Local Mac stays at ~8GB usage (IDE + browser + Slack). No memory pressure.
+Local machine stays at ~8GB usage (IDE + browser). No memory pressure.
 
 ---
 

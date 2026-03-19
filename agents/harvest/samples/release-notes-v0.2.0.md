@@ -10,21 +10,21 @@
 
 ### Features
 
-- **guardian**: Add Git/PR guardian agent (#2) - @hinominant
-- **guardian**: Enhance with security analysis and large-scale PR support (#12) - @hinominant
-- **arena**: Add multi-engine parallel implementation agent (#11) - @hinominant
-- **triage**: Add advanced agent collaboration patterns (#10) - @hinominant
-- **nexus**: Add advanced collaboration architecture (#9) - @hinominant
-- **zen**: Add advanced agent collaboration patterns (#8) - @hinominant
-- **judge**: Add advanced agent collaboration patterns (#7) - @hinominant
-- **builder**: Add advanced agent collaboration patterns (#6) - @hinominant
-- **scout**: Add advanced agent collaboration patterns (#5) - @hinominant
-- **compete**: Add advanced agent collaboration patterns (#4) - @hinominant
-- **echo**: Add advanced agent collaboration patterns (#3) - @hinominant
+- **guardian**: Add Git/PR guardian agent (#2) - @contributor
+- **guardian**: Enhance with security analysis and large-scale PR support (#12) - @contributor
+- **arena**: Add multi-engine parallel implementation agent (#11) - @contributor
+- **triage**: Add advanced agent collaboration patterns (#10) - @contributor
+- **nexus**: Add advanced collaboration architecture (#9) - @contributor
+- **zen**: Add advanced agent collaboration patterns (#8) - @contributor
+- **judge**: Add advanced agent collaboration patterns (#7) - @contributor
+- **builder**: Add advanced agent collaboration patterns (#6) - @contributor
+- **scout**: Add advanced agent collaboration patterns (#5) - @contributor
+- **compete**: Add advanced agent collaboration patterns (#4) - @contributor
+- **echo**: Add advanced agent collaboration patterns (#3) - @contributor
 
 ### Documentation
 
-- **sweep**: Enhance skill with safety and usability improvements (#1) - @hinominant
+- **sweep**: Enhance skill with safety and usability improvements (#1) - @contributor
 
 ### Highlights
 
@@ -54,11 +54,11 @@
 
 Thanks to all contributors who made this release possible:
 
-@hinominant
+@contributor
 
 ### Full Changelog
 
-[v0.1.0...v0.2.0](https://github.com/hinominant/agent-skills/compare/v0.1.0...v0.2.0)
+[v0.1.0...v0.2.0](https://github.com/example-org/agent-skills/compare/v0.1.0...v0.2.0)
 
 ---
 

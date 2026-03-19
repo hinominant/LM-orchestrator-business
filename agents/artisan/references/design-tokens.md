@@ -1,6 +1,6 @@
-# Luna Design System v3 — Design Tokens
+# Design System v3 — Design Tokens
 
-> Source: Figma `JkMNWC0yUllgd8ml9ZlqWk` (Luna DS v3)
+> Source: Figma `JkMNWC0yUllgd8ml9ZlqWk` (DS v3)
 > Last synced: 2026-03-12
 
 ---

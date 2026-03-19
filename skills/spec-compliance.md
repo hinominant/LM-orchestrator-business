@@ -13,7 +13,7 @@ model: haiku
 
 ### 1. SPEC参照
 - `.agents/PROJECT.md` のプロジェクト仕様を確認
-- `.agents/LUNA_CONTEXT.md` のビジネス文脈を確認
+- `.agents/PROJECT_CONTEXT.md` のビジネス文脈を確認（存在する場合）
 - 該当するドメインのSPEC文書を特定
 
 ### 2. 準拠チェック

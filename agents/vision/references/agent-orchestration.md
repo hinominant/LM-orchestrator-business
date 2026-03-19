@@ -149,7 +149,7 @@ Bridge ──business constraints──→ Vision ──direction proposal──
 | **Budget** | Limited dev resources, no external tools | Simpler implementation, fewer custom components |
 | **Timeline** | Launch in 2 weeks | Phased approach, MVP-first design |
 | **Scope** | Only 2 pages in scope | Focused design system, defer global changes |
-| **Stakeholder** | CEO prefers minimalism | Constrain visual direction accordingly |
+| **Stakeholder** | Stakeholders prefer minimalism | Constrain visual direction accordingly |
 | **Technical** | Legacy stack, no CSS Grid support | Fallback-friendly design patterns |
 
 ### Success Criteria

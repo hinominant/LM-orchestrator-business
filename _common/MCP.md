@@ -64,7 +64,7 @@ claude mcp add postgres -- npx -y @modelcontextprotocol/server-postgres "postgre
 
 ### PostgreSQL
 
-- **READ ONLYアクセスのみ**（Luna DBルール遵守）
+- **READ ONLYアクセスのみ**（本番DBへの書き込み禁止）
 - Analyst: Redash経由に加え、直接SQLクエリでデータ分析
 - Schema: 既存スキーマの調査・ER図生成
 - Tuner: EXPLAIN ANALYZEによるクエリ最適化

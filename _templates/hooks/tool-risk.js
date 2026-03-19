@@ -2,10 +2,10 @@
 'use strict';
 
 /**
- * Claude Code PreToolUse Hook - Tool Risk Classification + ARIS NO Gate
+ * Claude Code PreToolUse Hook - Tool Risk Classification + Safety Gate
  *
  * 3-Hook体制の PreToolUse フック。
- * - ARIS NO Gate パターン検知 → 自動ブロック
+ * - Safety Gate パターン検知 → 自動ブロック
  * - HIGH/MEDIUM リスク → 確認ダイアログ表示
  * - LOW リスク → サイレント通過
  * - additionalContext でファイルオーナーシップ情報を注入
@@ -14,27 +14,39 @@
  * Settings: ~/.claude/settings.json の hooks.PreToolUse に登録
  */
 
-// === ARIS NO Gate Patterns (auto-block) ===
+// === Safety Gate Patterns (auto-block) ===
 
-const NO_GATE_PATTERNS = [
+const SAFETY_GATE_PATTERNS = [
   {
     // ユーザー安全性: 認証情報の外部送信
     test: (cmd) =>
       /curl.*(-d|--data)/.test(cmd) &&
       /(password|secret|token|api_key|credential)/i.test(cmd),
-    reason: 'NO Gate: 認証情報の外部送信リスク',
+    reason: 'Safety Gate: 認証情報の外部送信リスク',
   },
   {
     // 破壊的操作: ルートや home の rm -rf, DROP DATABASE, force push to main
     test: (cmd) =>
       /(rm\s+-rf\s+[\/~]|DROP\s+(TABLE|DATABASE)|git\s+push\s+.*--force\s+.*main)/i.test(cmd),
-    reason: 'NO Gate: 破壊的操作の検出',
+    reason: 'Safety Gate: 破壊的操作の検出',
   },
   {
     // コスト制御不能: 無制限ループ
     test: (cmd) =>
       /(while\s+true|for\s+.*in\s+\$\(seq\s+\d{4,})/i.test(cmd),
-    reason: 'NO Gate: 無制限ループによるコスト制御不能リスク',
+    reason: 'Safety Gate: 無制限ループによるコスト制御不能リスク',
+  },
+  {
+    // シークレット漏洩: echo/printでシークレットをstdoutに出力
+    test: (cmd) =>
+      /(echo|printf|cat)\s+.*\$\{?([\w]*(?:SECRET|TOKEN|KEY|PASSWORD|API_KEY|PRIVATE)[\w]*)\}?/i.test(cmd),
+    reason: 'Safety Gate: シークレットのstdout出力リスク',
+  },
+  {
+    // シークレット漏洩: .envファイルをgit addしようとする
+    test: (cmd) =>
+      /git\s+add\s+.*\.env(?:\s|$)/i.test(cmd),
+    reason: 'Safety Gate: .envファイルのコミットリスク — シークレット漏洩の危険',
   },
 ];
 
@@ -58,6 +70,8 @@ const HIGH_RISK_PATTERNS = [
   /shutdown/,
   /reboot/,
   />\s*\/dev\/sd/,
+  // Secret exposure: hardcoded secrets in commands
+  /(?:curl|wget|http).*(?:Bearer|Basic)\s+[A-Za-z0-9_\-\.]{20,}/i,
 ];
 
 const MEDIUM_RISK_PATTERNS = [
@@ -100,8 +114,8 @@ function classifyRisk(toolName, toolInput) {
   if (toolName === 'Bash' && toolInput.command) {
     const cmd = toolInput.command;
 
-    // 1. ARIS NO Gate check (auto-block)
-    for (const pattern of NO_GATE_PATTERNS) {
+    // 1. Safety Gate check (auto-block)
+    for (const pattern of SAFETY_GATE_PATTERNS) {
       try {
         if (pattern.test(cmd)) {
           return { level: 'BLOCK', reason: pattern.reason };
@@ -163,7 +177,7 @@ process.stdin.on('end', () => {
     const { level, reason, additionalContext } = classifyRisk(toolName, toolInput);
 
     if (level === 'BLOCK') {
-      // ARIS NO Gate: auto-block
+      // Safety Gate: auto-block
       process.stdout.write(JSON.stringify({
         decision: 'block',
         reason: reason,

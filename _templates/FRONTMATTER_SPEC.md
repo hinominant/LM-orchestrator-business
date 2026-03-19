@@ -19,7 +19,6 @@
 | `disallowedTools` | string[] | No | [] | 使用禁止ツールリスト |
 | `skills` | string[] | No | [] | 参照スキルリスト |
 | `cognitiveMode` | string | No | — | 認知モード識別子 |
-| `aliceRole` | string | No | — | ALICE統合ロール |
 | `hooks` | object | No | — | フック設定 |
 | `background` | boolean | No | false | バックグラウンド実行 |
 
@@ -37,17 +36,16 @@
 
 ## Frontmatter例
 
-### Opus エージェント（CEO）
+### Opus エージェント（設計判断）
 ```yaml
 ---
-name: CEO
-description: 意思決定エージェント
+name: Architect
+description: アーキテクチャ設計エージェント
 model: opus
 permissionMode: plan-only
 maxTurns: 10
 memory: project
-cognitiveMode: executive-decision
-aliceRole: aris-founder
+cognitiveMode: architecture-design
 ---
 ```
 

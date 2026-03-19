@@ -31,12 +31,12 @@
 
 ```
 .agents/memory/
-├── ceo/
-│   ├── decisions.md       # 判断履歴
-│   └── patterns.md        # 判断パターン
 ├── nexus/
 │   ├── chains.md          # チェーン実行履歴
 │   └── routing.md         # ルーティング学習
+├── magi/
+│   ├── decisions.md       # 判断履歴
+│   └── patterns.md        # 判断パターン
 ├── analyst/
 │   ├── queries.md         # 頻用クエリ
 │   └── metrics.md         # 指標定義キャッシュ
@@ -73,9 +73,9 @@
 
 | 参照元 | 参照先 | ユースケース |
 |--------|--------|-------------|
-| Nexus | CEO | 過去の判断パターンを参考にルーティング |
+| Nexus | Magi | 過去の判断パターンを参考にルーティング |
 | Builder | Radar | フレーキーテスト履歴を参考に実装 |
-| Analyst | CEO | 過去の判断で使用された指標を参照 |
+| Analyst | Magi | 過去の判断で使用された指標を参照 |
 | Radar | Builder | 実装パターンに合わせたテスト設計 |
 
 ---

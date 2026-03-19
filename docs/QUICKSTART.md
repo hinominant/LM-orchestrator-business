@@ -11,31 +11,37 @@
 プロジェクトのルートディレクトリで:
 
 ```bash
-# 全68エージェントをインストール
-curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash
+# 全エージェントをインストール（セキュリティHooks付き推奨）
+curl -sL https://raw.githubusercontent.com/goto-and-stop/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
 
 # よく使うエージェントのみ
-curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash -s -- nexus builder radar scout
+curl -sL https://raw.githubusercontent.com/goto-and-stop/goto-orchestrator/main/install.sh | bash -s -- --with-hooks nexus builder radar scout
 
 # MCP連携付き
-./install.sh --with-mcp
+./install.sh --with-hooks --with-mcp
 
 # Permissions設定付き
-./install.sh --with-permissions
+./install.sh --with-hooks --with-permissions
 ```
+
+> **推奨**: `--with-hooks` オプションを常に付けてください。Tool Risk Hook によりツール実行前のリスク評価が有効になります。
 
 ## インストールされるもの
 
 ```
 .claude/
-├── agents/          # エージェント定義（68個）
+├── agents/          # エージェント定義
 │   └── _framework.md  # フレームワークプロトコル
-├── commands/        # カスタムスラッシュコマンド（6個）
+├── commands/        # カスタムスラッシュコマンド
 ├── settings.json    # 安全なPermissions設定（--with-permissions時）
+├── hooks/           # セキュリティHooks（--with-hooks時）
+│   ├── tool-risk.js    # PreToolUse リスク評価
+│   ├── post-tool-use.js # PostToolUse ログ記録
+│   └── stop-hook.js    # Stop セッションサマリ
 └── scripts/         # MCP・Cloud実行スクリプト
 .agents/
 ├── PROJECT.md       # 共有ナレッジ（チーム全体で蓄積）
-└── LUNA_CONTEXT.md  # ビジネスコンテキスト
+└── PROJECT_CONTEXT.md  # プロジェクト固有のビジネスコンテキスト
 ```
 
 ## 最初の実行
@@ -61,7 +67,7 @@ claude
 | リファクタリング | `/zen` |
 | PR準備 | `/guardian` |
 | 複雑なタスクの分解 | `/sherpa` |
-| ビジネス判断 | `/ceo` |
+| セキュリティ確認 | `/sentinel` |
 
 ## トラブルシューティング
 
@@ -73,7 +79,7 @@ ls .claude/agents/  # エージェントファイルが存在するか確認
 
 ファイルがなければ再インストール:
 ```bash
-curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/goto-and-stop/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
 ```
 
 ### コンテキストが切れた

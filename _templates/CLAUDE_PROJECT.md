@@ -1,4 +1,4 @@
-# Hino Orchestrator - Framework Protocol
+# Goto Orchestrator - Framework Protocol
 
 > このファイルは `.claude/agents/_framework.md` としてプロジェクトに配置される。
 > 全エージェントがこのプロトコルに従って動作する。
@@ -11,9 +11,9 @@
 User Request
      |
      v
-  [Nexus] ---- Phase 0: EXECUTIVE_REVIEW
+  [Nexus] ---- Phase 0: SECURITY_CHECK
      |
-     +---> CEO判断が必要？ → [CEO] → 方針・制約を付与
+     +---> セキュリティ確認 → [Sentinel] → リスク評価
      |
      +---> Sequential: Agent1 → Agent2 → Agent3（ロールシミュレーション）
      |
@@ -26,8 +26,8 @@ User Request
 2. **Minimum viable chain** - 必要最小限のエージェントで構成
 3. **File ownership is law** - 並列実行時、各ファイルのオーナーは1つだけ
 4. **Fail fast, recover smart** - ガードレール L1-L4 で早期検出、可能なら自動回復
-5. **Context is precious** - `.agents/PROJECT.md` + `.agents/LUNA_CONTEXT.md` でエージェント間の知識を共有
-6. **CEO-first for business** - ビジネス判断は技術実装の前にCEOが方針を出す
+5. **Context is precious** - `.agents/PROJECT.md` + `.agents/PROJECT_CONTEXT.md` でエージェント間の知識を共有
+6. **Security-first** - セキュリティ確認は技術実装の前に行う。Tool Risk Hooks で破壊的操作を事前検出
 7. **Critical Thinking** - 指示の鵜呑み禁止。矛盾があれば指摘。根拠なき代替案は禁止
 8. **Spec-First** - 仕様→テスト→実装の順序を守る（適用可能なタスクのみ）
 9. **Simplicity first** - 最小影響コードを強制。過剰設計より3行の重複を許容する
@@ -71,8 +71,7 @@ Complexity Assessment と連動し、計画モードの使用を制御する。
 | リファクタリング | Zen → Radar |
 | セキュリティ監査 | Sentinel → Probe → Builder → Radar |
 | PR準備 | Guardian → Judge |
-| ビジネス/戦略 | CEO → Sherpa → Forge/Builder → Radar |
-| データ分析 | Analyst → CEO（意思決定要時）→ Nexus（施策化） |
+| データ分析 | Analyst → Nexus（施策化） |
 | データパイプライン修正 | Scout → Analyst → Builder → Radar |
 | スペック準拠監査 | Auditor → Builder → Radar |
 | 大規模修正（監査付き） | Sherpa → Builder → Auditor → Radar |
@@ -405,14 +404,6 @@ PreToolUse Hook でツール実行前にリスク分類を表示:
 - 50%到達で手動compact推奨、80%で自動compact
 - topic変更時は `/clear`、迷走時は `/rewind`
 - 長チェーン時はNexusが中間compact管理
-
-## ALICE Integration
-
-ALICE（ARIS/LROS/NOVA/Secretary）統合については `_common/ALICE_INTEGRATION.md` を参照。
-
-- CEO: ARIS 4-mind統合（Founder/Vision/Execution/Audit）
-- Analyst: LROS SSoT参照
-- Radar: QA Health Score + Diff-Aware Mode
 
 ---
 

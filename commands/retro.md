@@ -5,7 +5,7 @@ description: 振り返りコマンド。git logとActivity Logからセッショ
 
 # Retro Command
 
-> 過去の作業を構造化して振り返り、成功/失敗パターンをARISにフィードバックする。
+> 過去の作業を構造化して振り返り、成功/失敗パターンを記録する。
 
 ---
 
@@ -58,8 +58,8 @@ cat .agents/PROJECT.md | grep "Activity Log" -A 100
 ### 4. 永続化
 
 - `.context/retros/YYYY-MM-DD.json` に保存
-- Success patterns → ARIS `docs/success_pattern_dictionary.md` 候補
-- Failure patterns → ARIS `docs/failure_pattern_dictionary.md` 候補
+- Success patterns → `.context/retros/success_patterns.md` に蓄積
+- Failure patterns → `.context/retros/failure_patterns.md` に蓄積
 
 ### 5. 週次トレンド比較
 

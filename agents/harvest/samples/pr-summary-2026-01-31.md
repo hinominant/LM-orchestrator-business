@@ -1,7 +1,7 @@
 # PR Summary Report
 
 **Period:** 2026-01-21 - 2026-01-31
-**Repository:** hinominant/agent-skills
+**Repository:** example-org/agent-skills
 **Generated:** 2026-01-31
 
 ---
@@ -48,7 +48,7 @@
 
 | Rank | Author | PRs | Additions | Deletions |
 |------|--------|-----|-----------|-----------|
-| 1 | @hinominant | 12 | +8,141 | -748 |
+| 1 | @contributor | 12 | +8,141 | -748 |
 
 ## Weekly Breakdown
 

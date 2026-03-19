@@ -1,62 +1,139 @@
 # Tool Risk Management Protocol
 
-> 3-Hook体制によるツール実行の安全管理。初心者向け安全ネット + ARIS NO Gate パターン。
+> 3-Hook体制 + Sandbox + Permissions による多層防御。Claude Code 初心者の安全なオンボーディングを最優先に設計。
 
 ---
 
-## 3-Hook Architecture
+## Security Architecture（多層防御）
+
+```
+Layer 1: Sandbox（OS レベル隔離）
+  ├── macOS: Seatbelt / Linux: Bubble Wrap
+  ├── ファイルシステム制限（~/.aws, ~/.ssh 等を遮断）
+  └── ネットワーク制限（ホワイトリスト方式）
+
+Layer 2: Permissions（deny/allow ルール）
+  ├── deny が最優先（allow より先に評価）
+  ├── 危険コマンドの明示的ブロック
+  └── 機密ファイルの読み取り禁止
+
+Layer 3: Hooks（3-Hook体制）
+  ├── PreToolUse: リスク評価・Safety Gate
+  ├── PostToolUse: 実行ログ記録
+  └── Stop: セッションサマリ永続化
+
+Layer 4: Guardrails（L1-L4）
+  └── エージェントレベルの品質・安全ガードレール
+```
+
+---
+
+## Layer 1: Sandbox
+
+### 推奨設定（settings.json）
+
+```json
+{
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "denyRead": [
+        "~/.aws/credentials",
+        "~/.ssh/id_*",
+        "~/.gnupg/**",
+        "~/.config/gh/hosts.yml",
+        "~/.netrc"
+      ]
+    }
+  }
+}
+```
+
+### ネットワーク制限（上級者向け）
+
+外部への意図しないデータ送信を防止:
+
+```json
+{
+  "sandbox": {
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "*.githubusercontent.com",
+        "*.npmjs.org",
+        "registry.yarnpkg.com",
+        "pypi.org"
+      ]
+    }
+  }
+}
+```
+
+---
+
+## Layer 2: Permissions
+
+### deny ルール（最優先で評価）
+
+| カテゴリ | ルール |
+|---------|--------|
+| 破壊的操作 | `rm -rf /`, `rm -rf ~`, `sudo *`, `mkfs *`, `dd if=*` |
+| Git 破壊 | `git push --force *`, `git push -f *`, `git reset --hard *`, `git clean -fd *` |
+| セキュリティ | `chmod 777 *` |
+| シークレット送信 | `curl * --data *password*`, `curl * -d *secret*`, `curl * -d *token*` |
+| 機密ファイル | `.env`, `.env.*`, `secrets/**`, `*.pem`, `*.key`, `credentials.json` |
+
+### allow ルール（安全な操作を自動承認）
+
+テスト実行、lint、git read操作、ls/pwd 等の読み取り専用コマンド。
+
+---
+
+## Layer 3: 3-Hook体制
 
 | Hook | Phase | Purpose |
 |------|-------|---------|
-| `tool-risk.js` (PreToolUse) | 実行前 | リスク評価・ブロック判定 |
+| `tool-risk.js` (PreToolUse) | 実行前 | リスク評価・Safety Gate・ブロック判定 |
 | `post-tool-use.js` (PostToolUse) | 実行後 | 結果キャプチャ・ログ記録 |
 | `stop-hook.js` (Stop) | 終了時 | セッションサマリ・メモリ永続化 |
 
----
-
-## Risk Levels
+### Risk Levels
 
 | Level | Indicator | Description | Action |
 |-------|-----------|-------------|--------|
-| BLOCK | - | ARIS NO Gate パターン検知 | 自動ブロック |
-| HIGH | RED | 破壊的・不可逆な操作 | 確認ダイアログ + 説明表示 |
-| MEDIUM | YELLOW | 外部影響・副作用のある操作 | 説明表示 |
-| LOW | GREEN | 読み取り専用・ローカル変更 | サイレント通過 |
+| BLOCK | - | Safety Gate パターン検知 | 自動ブロック（実行不可） |
+| HIGH | 🔴 | 破壊的・不可逆な操作 | 確認ダイアログ + 影響説明 |
+| MEDIUM | 🟡 | 外部影響・副作用のある操作 | 説明表示 |
+| LOW | 🟢 | 読み取り専用・ローカル変更 | サイレント通過 |
 
----
+### Safety Gate パターン（自動ブロック）
 
-## PreToolUse: tool-risk.js
-
-### ARIS NO Gate パターン
-以下のパターンを検知した場合、自動ブロック:
-
-| Pattern | Trigger | Action |
+| Pattern | Trigger | Reason |
 |---------|---------|--------|
-| ユーザー安全性リスク | 個人情報の外部送信、認証情報の露出 | BLOCK |
-| 信頼低下リスク | 本番データの直接操作、未テストのデプロイ | BLOCK |
-| コスト制御不能 | 大量API呼び出し、無制限ループ | BLOCK |
-| 破壊的操作 | `rm -rf`, `DROP TABLE`, force push | WARN + 確認 |
+| 認証情報送信 | curl/wget でシークレットを含むデータ送信 | 外部への認証情報漏洩 |
+| システム破壊 | `rm -rf /`, `DROP DATABASE`, force push to main | 不可逆な破壊操作 |
+| コスト暴走 | `while true`, 大量ループ | リソース制御不能 |
+| シークレット露出 | echo/printf でシークレット変数を stdout に出力 | ログへの漏洩 |
+| .env コミット | `git add .env` | シークレットのバージョン管理混入 |
 
-### Risk Classification
-
-#### Bash Commands
+### Bash コマンドリスク分類
 
 | Risk | Commands |
 |------|----------|
-| HIGH | `rm -rf`, `git push --force`, `git reset --hard`, `DROP TABLE`, `DELETE FROM`, `docker rm -f`, `kill -9`, `chmod 777`, `mkfs`, `dd`, `shutdown` |
-| MEDIUM | `git push`, `git commit`, `npm publish`, `docker build`, `pip install`, `curl -X POST/PUT/DELETE`, `ssh`, `scp` |
+| HIGH | `rm -rf`, `git push --force`, `git reset --hard`, `DROP TABLE`, `DELETE FROM`, `TRUNCATE`, `docker rm -f`, `kill -9`, `chmod 777`, `mkfs`, `dd`, `shutdown`, Bearer/Basic トークン付き curl |
+| MEDIUM | `git push`, `git commit`, `npm publish`, `docker build`, `pip install`, `curl -X POST/PUT/DELETE`, `ssh`, `scp`, `brew install/uninstall` |
 | LOW | `ls`, `cat`, `grep`, `git status`, `git log`, `git diff`, `npm test`, `echo`, `pwd`, `which` |
 
-#### Tools
+### ツールリスク分類
 
 | Risk | Tools |
 |------|-------|
-| HIGH | - |
-| MEDIUM | Write, Edit, NotebookEdit, Bash (see above) |
-| LOW | Read, Glob, Grep, WebFetch, WebSearch |
+| MEDIUM | Write, Edit, NotebookEdit |
+| LOW | Read, Glob, Grep, WebFetch, WebSearch, TaskList, TaskGet |
 
 ### additionalContext
-`output.additionalContext` フィールドでツール実行にコンテキストを注入:
+`output.additionalContext` でツール実行にコンテキストを注入:
 ```json
 {
   "decision": "allow",
@@ -66,57 +143,35 @@
 
 ---
 
-## PostToolUse: post-tool-use.js
+## シークレット保護（重点）
 
-- ツール実行結果を `.context/tool-log.jsonl` に記録
-- エラーパターンの検出と蓄積
+### 保護対象
 
----
+| 種類 | パターン例 |
+|------|-----------|
+| API キー | `AKIA*`, `sk-*`, `ghp_*`, `gho_*` |
+| トークン | Bearer/Basic 認証トークン |
+| パスワード | DB 接続文字列、.env 内パスワード |
+| 秘密鍵 | `*.pem`, `*.key`, `id_rsa`, `id_ed25519` |
+| 認証情報ファイル | `.env`, `credentials.json`, `.htpasswd`, `.netrc` |
 
-## Stop: stop-hook.js
+### 防御層
 
-- セッション終了時にツール使用サマリを生成
-- `.context/sessions/YYYY-MM-DD.jsonl` に永続化
-- `.agents/PROJECT.md` Activity Log 更新
+1. **Sandbox**: ~/.aws, ~/.ssh を読み取り禁止
+2. **Permissions deny**: .env, *.pem, *.key の Read をブロック
+3. **Hook**: シークレット変数の stdout 出力を Safety Gate でブロック
+4. **Hook**: `git add .env` を Safety Gate でブロック
+5. **CLAUDE.md**: シークレットに関するルールを明記
 
----
+### CLAUDE.md への推奨記述
 
-## Hooks Implementation
-
-### settings.json 設定
-
-Claude Code の `settings.json` に以下を追加:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ~/.claude/hooks/tool-risk.js"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Hook Script
-
-`~/.claude/hooks/tool-risk.js` に配置。stdin から JSON を受け取り、リスク判定結果を stdout に返す。
-
-```
-stdin: { tool_name, tool_input }
-  |
-Risk Classification + ARIS NO Gate Check
-  |
-stdout: { decision, reason }
-  - BLOCK: { decision: "block", reason: "NO Gate: ..." }
-  - LOW: { decision: "approve" }（サイレント通過）
-  - MEDIUM/HIGH: { decision: "ask_user", reason: "HIGH RISK: ..." }
+```markdown
+## Security Rules
+- .env ファイルは絶対にコミットしない
+- API キー・トークン・パスワードをコード内にハードコードしない
+- 環境変数は process.env / os.environ 経由でアクセスする
+- シークレットを echo/console.log で出力しない
+- curl/wget でシークレットを含むデータを送信しない
 ```
 
 ---
@@ -124,30 +179,36 @@ stdout: { decision, reason }
 ## インストール
 
 ```bash
-install.sh --with-hooks
-```
+# 推奨: Hooks + Permissions 同時インストール
+install.sh --with-hooks --with-permissions
 
-3つのhookファイルが `~/.claude/hooks/` にコピーされる。
+# Hooks のみ
+install.sh --with-hooks
+
+# Permissions のみ
+install.sh --with-permissions
+```
 
 ---
 
-## Use Cases
-
-### 初心者オンボーディング
-
-新しいチームメンバーが Claude Code を使い始める際に、危険な操作を事前に警告する。
+## 初心者オンボーディング
 
 ```yaml
-Scenario: 初めてのClaude Code利用
-  1. install.sh --with-hooks でフック設定を自動インストール
-  2. LOW risk → サイレント通過（ストレスなし）
-  3. MEDIUM risk → 「このコマンドは外部に影響があります」と表示
-  4. HIGH risk → 「破壊的操作です。本当に実行しますか？」と表示
+Scenario: Claude Code を初めて使うエンジニア
+  1. install.sh --with-hooks --with-permissions でセットアップ
+  2. Sandbox が OS レベルでファイル/ネットワークを制限
+  3. Permissions が危険コマンドと機密ファイルをブロック
+  4. Hook が実行前にリスクレベルを判定:
+     - LOW → サイレント通過（ストレスなし）
+     - MEDIUM → 「このコマンドは外部に影響があります」と表示
+     - HIGH → 「⚠️ 破壊的操作です。影響: [説明]」と表示
+     - BLOCK → 「🚫 この操作はブロックされました。理由: [理由]」
+  5. 安全な代替案が提示される
 ```
 
 ### 経験者向け
 
-熟練ユーザーは Hook を無効化するか、HIGH のみ表示に変更可能。
+Hook を無効化するか、HIGH のみ表示に変更可能:
 
 ```json
 {
@@ -159,18 +220,46 @@ Scenario: 初めてのClaude Code利用
 
 ---
 
+## 組織向け: Managed Settings
+
+チーム全体に統一セキュリティポリシーを適用する場合:
+
+### 配置先
+- macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`
+- Linux: `/etc/claude-code/managed-settings.json`
+
+### 統合設定例
+
+```json
+{
+  "permissions": {
+    "disableBypassPermissionsMode": "disable"
+  },
+  "allowManagedPermissionRulesOnly": true,
+  "allowManagedHooksOnly": true,
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false
+  }
+}
+```
+
+---
+
+## 確認コマンド
+
+| コマンド | 用途 |
+|---------|------|
+| `/permissions` | 現在の権限設定を一覧表示 |
+| `/status` | 読み込み設定ファイル確認・エラー検出 |
+
+---
+
 ## Integration with Guardrails
 
 | Tool Risk | Guardrail Level |
 |-----------|-----------------|
-| BLOCK | 即時停止（ARIS NO Gate） |
+| BLOCK | 即時停止（Safety Gate） |
 | HIGH | L3-L4（破壊的操作は即時確認） |
 | MEDIUM | L1-L2（ログ + 軽い警告） |
 | LOW | なし |
-
----
-
-## Template: tool-risk.js
-
-`_templates/hooks/tool-risk.js` にテンプレートを配置。
-install.sh --with-hooks で `~/.claude/hooks/` にコピーされる。

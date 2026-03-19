@@ -1,21 +1,22 @@
 #!/bin/bash
 set -euo pipefail
 
-# Hino Orchestrator Installer
+# Goto Orchestrator Installer
 # Usage:
-#   curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash
-#   curl -sL https://raw.githubusercontent.com/hinominant/hino-orchestrator/main/install.sh | bash -s -- nexus rally builder radar
-#   ./install.sh                    # Install all agents
-#   ./install.sh nexus rally builder # Install specific agents
-#   ./install.sh --with-mcp         # Install agents + setup MCP servers
-#   ./install.sh --with-permissions  # Install agents + safe permission defaults
-#   ./install.sh --with-hooks        # Install agents + tool risk hooks (3-Hook体制)
+#   curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
+#   curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks nexus rally builder radar
+#   ./install.sh --with-hooks             # Install all agents + hooks (recommended)
+#   ./install.sh                           # Install all agents
+#   ./install.sh nexus rally builder       # Install specific agents
+#   ./install.sh --with-mcp               # Install agents + setup MCP servers
+#   ./install.sh --with-permissions        # Install agents + safe permission defaults
+#   ./install.sh --with-hooks             # Install agents + tool risk hooks (3-Hook体制) ★推奨
 
-REPO="hinominant/hino-orchestrator"
+REPO="hinominant/goto-orchestrator"
 BRANCH="main"
 
-# All 68 agents (65 simota + 3 Luna originals: ceo, analyst, auditor)
-ALL_AGENTS="analyst anvil architect arena artisan atlas auditor bard bolt bridge builder canon canvas ceo cipher compete director echo experiment flow forge gateway gear grove growth guardian harvest hone horizon judge launch lens magi morph muse navigator nexus palette polyglot probe pulse quill radar rally reel researcher retain rewind ripple scaffold schema scout scribe sentinel sherpa showcase spark specter stream sweep trace triage tuner vision voice voyager warden zen"
+# All 65 agents
+ALL_AGENTS="analyst anvil architect arena artisan atlas auditor bard bolt bridge builder canon canvas cipher compete director echo experiment flow forge gateway gear grove growth guardian harvest hone horizon judge launch lens magi morph muse navigator nexus palette polyglot probe pulse quill radar rally reel researcher retain rewind ripple scaffold schema scout scribe sentinel sherpa showcase spark specter stream sweep trace triage tuner vision voice voyager warden zen"
 
 # Parse flags
 WITH_MCP=false
@@ -34,8 +35,14 @@ done
 # Default: install all if no agent args
 AGENTS="${AGENT_ARGS[*]:-$ALL_AGENTS}"
 
-echo "=== Hino Orchestrator Installer ==="
+echo "=== Goto Orchestrator Installer ==="
 echo "Source: github.com/${REPO}"
+echo ""
+if [ "$WITH_HOOKS" = true ]; then
+  echo "🔒 Security hooks enabled (recommended)"
+else
+  echo "💡 Tip: --with-hooks を付けると Tool Risk Hooks が有効になります（初心者推奨）"
+fi
 echo ""
 
 # Create directories
@@ -120,12 +127,38 @@ else
   echo "  -> .agents/PROJECT.md already exists, skipping"
 fi
 
-echo "[7/12] Setting up business context..."
-if [ ! -f ".agents/LUNA_CONTEXT.md" ]; then
-  cp "$TMPDIR/_templates/LUNA_CONTEXT.md" ".agents/LUNA_CONTEXT.md"
-  echo "  -> Created .agents/LUNA_CONTEXT.md (customize for your project)"
+echo "[7/12] Setting up project context..."
+if [ ! -f ".agents/PROJECT_CONTEXT.md" ]; then
+  if [ -f "$TMPDIR/_templates/PROJECT_CONTEXT.md" ]; then
+    cp "$TMPDIR/_templates/PROJECT_CONTEXT.md" ".agents/PROJECT_CONTEXT.md"
+  else
+    cat > ".agents/PROJECT_CONTEXT.md" << 'CONTEXT_EOF'
+# Project Context
+
+プロジェクトのビジネス文脈をここに記載してください。エージェントがビジネス判断の参考にします。
+
+## プロジェクト概要
+
+- **プロジェクト名**: (記入してください)
+- **目的**: (記入してください)
+- **ターゲットユーザー**: (記入してください)
+
+## ビジネス目標
+
+- (記入してください)
+
+## 技術的制約
+
+- (記入してください)
+
+## 重要なドメイン知識
+
+- (記入してください)
+CONTEXT_EOF
+  fi
+  echo "  -> Created .agents/PROJECT_CONTEXT.md (customize for your project)"
 else
-  echo "  -> .agents/LUNA_CONTEXT.md already exists, skipping"
+  echo "  -> .agents/PROJECT_CONTEXT.md already exists, skipping"
 fi
 
 echo "[8/12] Copying MCP scripts and templates..."
@@ -164,26 +197,26 @@ fi
 
 echo "[9/12] Checking CLAUDE.md..."
 if [ -f "CLAUDE.md" ]; then
-  if grep -q "Hino Orchestrator" CLAUDE.md 2>/dev/null; then
+  if grep -q "Goto Orchestrator" CLAUDE.md 2>/dev/null; then
     echo "  -> CLAUDE.md already has framework reference, skipping"
   else
     cat >> CLAUDE.md << 'FRAMEWORK_EOF'
 
 ## Agent Team Framework
 
-This project uses [Hino Orchestrator](https://github.com/hinominant/hino-orchestrator).
+This project uses [Goto Orchestrator](https://github.com/hinominant/goto-orchestrator).
 Agent definitions are in `.claude/agents/`. Framework protocol is in `.claude/agents/_framework.md`.
 
 ### Key Rules
+- Security-first: Tool Risk Hooks で危険な操作を事前警告
 - Hub-spoke pattern: all communication through orchestrator (Nexus/Rally)
-- CEO handles business decisions before technical execution
 - File ownership is law in parallel execution
 - Guardrails L1-L4 for safe autonomous execution
 - All outputs in Japanese
 - Conventional Commits, no agent names in commits/PRs
 
-### Business Context
-- `.agents/LUNA_CONTEXT.md` - Business context for CEO decisions
+### Project Context
+- `.agents/PROJECT_CONTEXT.md` - Project business context
 - `.agents/PROJECT.md` - Shared knowledge across agents
 FRAMEWORK_EOF
     echo "  -> Appended framework reference to CLAUDE.md"
@@ -194,19 +227,19 @@ else
 
 ## Agent Team Framework
 
-This project uses [Hino Orchestrator](https://github.com/hinominant/hino-orchestrator).
+This project uses [Goto Orchestrator](https://github.com/hinominant/goto-orchestrator).
 Agent definitions are in `.claude/agents/`. Framework protocol is in `.claude/agents/_framework.md`.
 
 ### Key Rules
+- Security-first: Tool Risk Hooks で危険な操作を事前警告
 - Hub-spoke pattern: all communication through orchestrator (Nexus/Rally)
-- CEO handles business decisions before technical execution
 - File ownership is law in parallel execution
 - Guardrails L1-L4 for safe autonomous execution
 - All outputs in Japanese
 - Conventional Commits, no agent names in commits/PRs
 
-### Business Context
-- `.agents/LUNA_CONTEXT.md` - Business context for CEO decisions
+### Project Context
+- `.agents/PROJECT_CONTEXT.md` - Project business context
 - `.agents/PROJECT.md` - Shared knowledge across agents
 FRAMEWORK_EOF
   echo "  -> Created CLAUDE.md with framework reference"
@@ -290,7 +323,9 @@ if [ "$WITH_HOOKS" = true ]; then
 
   echo "  Hooks installed (3-Hook体制: PreToolUse + PostToolUse + Stop)"
 else
-  echo "  -> Skipped (use --with-hooks to install 3-Hook risk classification)"
+  echo "  -> Skipped"
+  echo "  ★ 推奨: --with-hooks を付けると Tool Risk Hooks（3-Hook体制）が有効になります"
+  echo "    破壊的操作の事前警告・シークレット保護など、安全にClaude Codeを使えます"
 fi
 
 echo ""
@@ -316,16 +351,18 @@ for f in .claude/commands/*.md; do
 done
 echo ""
 echo "Next steps:"
-echo "  1. Customize .agents/LUNA_CONTEXT.md for your project"
+echo "  1. Customize .agents/PROJECT_CONTEXT.md for your project"
 echo "  2. Review .agents/PROJECT.md for shared knowledge"
 echo "  3. Customize CLAUDE.md for your project"
-echo "  4. Run './install.sh --with-permissions' for safe permission defaults"
+if [ "$WITH_HOOKS" != true ]; then
+  echo "  4. ★ Run './install.sh --with-hooks' for tool risk classification (recommended)"
+fi
 echo ""
 echo "Usage (agents):"
-echo "  /ceo この機能の優先度を判断して"
 echo "  /nexus ログイン機能を実装したい"
 echo "  /analyst ユーザー離脱率を分析して"
 echo "  /rally フロントエンドとバックエンドを並列実装して"
+echo "  /sentinel セキュリティチェックして"
 echo ""
 echo "Usage (commands):"
 echo "  /superpowers 認証システムをリファクタリングして"
@@ -334,7 +371,6 @@ echo "  /code-simplifier 直近の変更をクリーンアップして"
 echo "  /playground マークダウンエディタを作って"
 echo "  /chrome このページのデータを収集して"
 echo "  /pr-review #123"
-echo "  /retro"
 echo ""
 echo "MCP Integration:"
 echo "  # Global MCP setup (recommended)"
@@ -354,3 +390,4 @@ echo "  # Usage:"
 echo "  bash .claude/scripts/cloud/cloud.sh start --repo OWNER/REPO"
 echo "  bash .claude/scripts/cloud/cloud.sh run \"npm run build\""
 echo "  bash .claude/scripts/cloud/cloud.sh status"
+echo ""

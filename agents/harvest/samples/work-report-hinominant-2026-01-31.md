@@ -1,8 +1,8 @@
 # Individual Work Report
 
-**Author:** @hinominant
+**Author:** @contributor
 **Period:** 2026-01-21 - 2026-01-31
-**Repository:** hinominant/agent-skills
+**Repository:** example-org/agent-skills
 
 ---
 
