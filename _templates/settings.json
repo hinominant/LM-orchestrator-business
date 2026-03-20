@@ -3,7 +3,7 @@
   "enableAllProjectMcpServers": false,
   "disableBypassPermissionsMode": "disable",
   "sandbox": {
-    "_comment": "サンドボックス設定。機密ファイルへの直接読み取りパスをブロックする。",
+    "_comment": "サンドボックス設定。機密ファイルへの直接読み取りパスをブロックする。allowUnsandboxedCommands:false でdangerouslyDisableSandboxパラメータによる迂回をブロック。",
     "enabled": true,
     "allowUnsandboxedCommands": false,
     "filesystem": {
@@ -15,6 +15,19 @@
         "~/.gnupg/**",
         "~/.config/gh/hosts.yml",
         "~/.netrc"
+      ]
+    },
+    "_network_comment": "ネットワークホワイトリスト（推奨）。外部への意図しないデータ送信を防止。必要なドメインのみ許可してコメントアウトを外す。",
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "github.com",
+        "*.githubusercontent.com",
+        "registry.npmjs.org",
+        "*.npmjs.org",
+        "registry.yarnpkg.com",
+        "pypi.org",
+        "files.pythonhosted.org"
       ]
     }
   },
