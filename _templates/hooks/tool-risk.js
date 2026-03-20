@@ -4,7 +4,7 @@
 /**
  * Claude Code PreToolUse Hook - Tool Risk Classification + Safety Gate
  *
- * 3-Hook体制の PreToolUse フック。
+ * 4-Hook体制の PreToolUse フック。
  * - Safety Gate パターン検知 → 自動ブロック
  * - HIGH/MEDIUM リスク → 確認ダイアログ表示
  * - LOW リスク → サイレント通過
