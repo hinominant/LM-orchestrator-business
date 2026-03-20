@@ -12,10 +12,10 @@
 
 ```bash
 # 全エージェントをインストール（セキュリティHooks付き推奨）
-curl -sL https://raw.githubusercontent.com/goto-and-stop/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
+curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
 
 # よく使うエージェントのみ
-curl -sL https://raw.githubusercontent.com/goto-and-stop/goto-orchestrator/main/install.sh | bash -s -- --with-hooks nexus builder radar scout
+curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks nexus builder radar scout
 
 # MCP連携付き
 ./install.sh --with-hooks --with-mcp
@@ -79,7 +79,7 @@ ls .claude/agents/  # エージェントファイルが存在するか確認
 
 ファイルがなければ再インストール:
 ```bash
-curl -sL https://raw.githubusercontent.com/goto-and-stop/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
+curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
 ```
 
 ### コンテキストが切れた

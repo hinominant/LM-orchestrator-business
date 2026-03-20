@@ -437,12 +437,13 @@ function determineLevel(operation, context):
 
 ## 6. Hook との連携
 
-### 6.1 3-Hook 体制との対応
+### 6.1 4-Hook 体制との対応
 
 | Hook | 実行タイミング | L1 | L2 | L3 | L4 |
 |------|-------------|:--:|:--:|:--:|:--:|
 | **PreToolUse** | ツール実行前 | — | `ask_user` | `ask_user` | `block` |
 | **PostToolUse** | ツール実行後 | `auto_fix` | `log` | `log` | — |
+| **Elicitation** | Elicitation リクエスト時 | — | — | — | `block`（ELI カテゴリ） |
 | **Stop** | セッション終了時 | `summary` | `summary` + warnings | `summary` + errors | — |
 
 ### 6.2 tool-risk.js との連携
@@ -458,7 +459,25 @@ tool-risk.js リスク判定
     └─ BLOCK       → L4: block（即時ブロック）
 ```
 
-### 6.3 post-tool-use.js との連携
+### 6.3 elicitation-guard.js との連携
+
+`_templates/hooks/elicitation-guard.js` が MCP Elicitation リクエストを評価し、インジェクション攻撃（ELI カテゴリ）を L4 でブロックする:
+
+```
+Elicitation リクエスト
+    │
+    ▼
+elicitation-guard.js
+    │
+    ├─ コマンド実行指示パターン検知？ → L4: block（ELI-F001）
+    ├─ 外部 URL 送信指示？           → L4: block（ELI-F002）
+    ├─ 環境変数漏洩指示？            → L4: block（ELI-F003）
+    ├─ シークレットパターン検出？     → L4: block（ELI-F004）
+    ├─ base64 隠し指示？            → L4: block（ELI-F005）
+    └─ 正常な Elicitation            → approve（通過）
+```
+
+### 6.4 post-tool-use.js との連携
 
 `_templates/hooks/post-tool-use.js` がツール実行結果を評価し、L1 自動回復をトリガーする:
 
@@ -471,7 +490,7 @@ tool-risk.js リスク判定
         └─ L1 対象外 → エラーレポート → L2 以上へ
 ```
 
-### 6.4 stop-hook.js との連携
+### 6.5 stop-hook.js との連携
 
 `_templates/hooks/stop-hook.js` がセッション終了時にガードレール発動サマリを出力する:
 
@@ -793,6 +812,7 @@ log_rotation:
 | `_common/INTERACTION.md` | 不明点ベースエスカレーション | 本仕様とは独立。同時発動あり |
 | `_templates/hooks/tool-risk.js` | PreToolUse Hook 実装 | L2-L4 の検知エンジン |
 | `_templates/hooks/post-tool-use.js` | PostToolUse Hook 実装 | L1 自動回復のトリガー |
+| `_templates/hooks/elicitation-guard.js` | Elicitation Hook 実装 | ELI カテゴリの L4 ブロック |
 | `_templates/hooks/stop-hook.js` | Stop Hook 実装 | セッション終了時のサマリ |
 | `_templates/settings.json` | 権限設定 | allow/deny ルールで L2 緩和・L4 強制 |
 

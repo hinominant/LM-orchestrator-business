@@ -5,11 +5,20 @@ const fs = require("fs");
 const path = require("path");
 
 function getInput() {
-  return JSON.parse(fs.readFileSync("/dev/stdin", "utf8"));
+  try {
+    return JSON.parse(fs.readFileSync("/dev/stdin", "utf8"));
+  } catch (_e) {
+    return null;
+  }
 }
 
 function main() {
   const input = getInput();
+  if (!input) {
+    // Parse error → continue to avoid blocking
+    console.log(JSON.stringify({ continue: true }));
+    return;
+  }
   const { session_id, stop_reason } = input;
 
   // ツールログからセッションサマリを生成

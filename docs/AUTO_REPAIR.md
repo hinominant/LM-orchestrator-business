@@ -36,7 +36,7 @@
 |------|------|---------|
 | 実行環境 | ローカル開発環境、Codespaces | 本番環境（別途インシデント対応） |
 | 操作種別 | ファイル操作、Git、テスト、ビルド、lint | DB直接操作、インフラ変更 |
-| エージェント | 全65エージェント + Rally並列実行 | 外部CI/CDパイプライン |
+| エージェント | 全67エージェント + Rally並列実行 | 外部CI/CDパイプライン |
 
 ---
 
@@ -1225,6 +1225,7 @@ INCIDENT:
 |------|-------|----------------------|---------|
 | PreToolUse (tool-risk.js) | 実行前 | AR-L0 予防（ブロック/警告） | 危険なコマンド・シークレット検知 |
 | PostToolUse (post-tool-use.js) | 実行後 | AR-L1 即時修復トリガー | エラー検知・異常出力 |
+| Elicitation (elicitation-guard.js) | Elicitation | AR-L0 予防（ELI カテゴリ即時ブロック） | MCP Elicitation インジェクションパターン検知 |
 | Stop (stop-hook.js) | 終了時 | 修復ログサマリ + 未修復問題一覧 | セッション終了 |
 
 ### 10.2 PreToolUse Hook（AR-L0 発動）

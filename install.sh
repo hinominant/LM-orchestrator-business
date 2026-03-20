@@ -10,12 +10,12 @@ set -euo pipefail
 #   ./install.sh nexus rally builder       # Install specific agents
 #   ./install.sh --with-mcp               # Install agents + setup MCP servers
 #   ./install.sh --with-permissions        # Install agents + safe permission defaults
-#   ./install.sh --with-hooks             # Install agents + tool risk hooks (3-Hook体制) ★推奨
+#   ./install.sh --with-hooks             # Install agents + tool risk hooks (4-Hook体制) ★推奨
 
 REPO="hinominant/goto-orchestrator"
 BRANCH="main"
 
-# All 65 agents
+# All 67 agents
 ALL_AGENTS="analyst anvil architect arena artisan atlas auditor bard bolt bridge builder canon canvas cipher compete director echo experiment flow forge gateway gear grove growth guardian harvest hone horizon judge launch lens magi morph muse navigator nexus palette polyglot probe pulse quill radar rally reel researcher retain rewind ripple scaffold schema scout scribe sentinel sherpa showcase spark specter stream sweep trace triage tuner vision voice voyager warden zen"
 
 # Parse flags
@@ -277,7 +277,7 @@ else
   echo "  -> Skipped (use --with-permissions to install safe defaults)"
 fi
 
-echo "[12/12] Hooks setup (3-Hook体制)..."
+echo "[12/12] Hooks setup (4-Hook体制)..."
 if [ "$WITH_HOOKS" = true ]; then
   # Install hooks to both project-local and global locations
   mkdir -p .claude/hooks
@@ -310,21 +310,31 @@ if [ "$WITH_HOOKS" = true ]; then
   SETTINGS_FILE="$HOME/.claude/settings.json"
   if [ -f "$SETTINGS_FILE" ]; then
     if ! grep -q "tool-risk" "$SETTINGS_FILE" 2>/dev/null; then
-      echo "  [NOTE] Add hook config to your ~/.claude/settings.json hooks.PreToolUse:"
-      echo '    { "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/tool-risk.js" }] }'
+      echo "  [NOTE] Add hook config to your ~/.claude/settings.json:"
+      echo '    "hooks": {'
+      echo '      "PreToolUse":   [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/tool-risk.js" }] }],'
+      echo '      "PostToolUse":  [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/post-tool-use.js" }] }],'
+      echo '      "Elicitation":  [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/elicitation-guard.js" }] }],'
+      echo '      "Stop":         [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/stop-hook.js" }] }]'
+      echo '    }'
     else
       echo "  -> Hook already configured in global settings.json"
     fi
   else
     echo "  [NOTE] ~/.claude/settings.json not found."
-    echo "  Add this to your settings.json hooks.PreToolUse:"
-    echo '    { "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/tool-risk.js" }] }'
+    echo "  Add this to your settings.json hooks section:"
+    echo '    "hooks": {'
+    echo '      "PreToolUse":   [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/tool-risk.js" }] }],'
+    echo '      "PostToolUse":  [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/post-tool-use.js" }] }],'
+    echo '      "Elicitation":  [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/elicitation-guard.js" }] }],'
+    echo '      "Stop":         [{ "matcher": "*", "hooks": [{ "type": "command", "command": "node ~/.claude/hooks/stop-hook.js" }] }]'
+    echo '    }'
   fi
 
-  echo "  Hooks installed (3-Hook体制: PreToolUse + PostToolUse + Stop)"
+  echo "  Hooks installed (4-Hook体制: PreToolUse + PostToolUse + Elicitation + Stop)"
 else
   echo "  -> Skipped"
-  echo "  ★ 推奨: --with-hooks を付けると Tool Risk Hooks（3-Hook体制）が有効になります"
+  echo "  ★ 推奨: --with-hooks を付けると Tool Risk Hooks（4-Hook体制）が有効になります"
   echo "    破壊的操作の事前警告・シークレット保護など、安全にClaude Codeを使えます"
 fi
 
@@ -380,7 +390,7 @@ echo "  # Project-specific PostgreSQL MCP"
 echo "  claude mcp add postgres -- npx -y @modelcontextprotocol/server-postgres 'postgresql://user:pass@host:5432/db'"
 echo ""
 echo "Hooks:"
-echo "  ./install.sh --with-hooks    # Install 3-Hook体制 (tool-risk + post-tool-use + stop-hook)"
+echo "  ./install.sh --with-hooks    # Install 4-Hook体制 (tool-risk + post-tool-use + elicitation-guard + stop-hook)"
 echo ""
 echo "Cloud Execution (Codespaces推奨):"
 echo "  # Setup"

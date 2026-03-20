@@ -44,12 +44,12 @@ Skills は原則 `haiku` で実行（定型手順のため）:
 
 | Skill | Model | Rationale |
 |-------|-------|-----------|
-| data-retrieval | haiku | 定型データ取得手順 |
 | spec-compliance | haiku | チェックリスト照合 |
 | test-coverage | haiku | カバレッジ分析 |
 | git-pr-prep | haiku | PR準備手順 |
 | diff-analysis | haiku | diff解析 |
-| feedback | haiku | パターン記録 |
+| secret-scan | haiku | シークレット検出スキャン |
+| safety-check | haiku | 安全性チェック |
 
 ### Command層（コマンド実行）
 Commands は呼び出し元セッションのモデルを継承。

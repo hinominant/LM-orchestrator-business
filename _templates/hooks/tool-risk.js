@@ -77,7 +77,7 @@ const SAFETY_GATE_PATTERNS = [
     // print/console.log/puts でシークレット変数を stdout に出力（強化版）
     test: (cmd) =>
       /(?:print|console\.log|console\.error|puts|echo|printf)\s*.*\$\{?(?:[A-Z_]*(?:SECRET|TOKEN|KEY|PASSWORD|API_KEY|PRIVATE|CREDENTIAL)[A-Z_]*)\}?/i.test(cmd) ||
-      /dotenv.*values|load_dotenv|require\s*['"]dotenv['"]/.test(cmd) && /print|console\.log/.test(cmd),
+      /dotenv.*values|load_dotenv|require\s*\(?\s*['"]dotenv['"]/.test(cmd) && /print|console\.log/.test(cmd),
     reason: 'Safety Gate: シークレット変数のstdout出力リスク（CI/CDログ漏洩の危険）',
   },
 ];

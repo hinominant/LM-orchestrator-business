@@ -172,7 +172,7 @@ curl.*api\.line\.me.*push
 | CTX-F003 | エージェント切替推奨 | :green_circle: GREEN | 現タスクに最適でないエージェントを使用中（例: builder でデバッグ） | 最適エージェントの提案 | 1. `docs/AGENT_SELECTION.md` を参照 2. 推奨エージェントに切替 |
 | CTX-F004 | PROJECT.md 未更新 | :green_circle: GREEN | 重要な意思決定・進捗があったがメモリが更新されていない | メモリ更新を推奨 | 1. `.agents/PROJECT.md` の Activity Log を更新 |
 | CTX-F005 | セッション復帰 | :green_circle: GREEN | 新しいセッションの開始時にコンテキストが未復元 | `CONTEXT_RECOVERY.md` プロトコルの発動 | 1. `.agents/PROJECT.md` の読み込み 2. 直近の git log 確認 |
-| CTX-F006 | 重複作業検知 | :yellow_circle: YELLOW | 過去セッションで同一テーマが3回以上検討されている | 過去セッション参照を提案 | 1. ARIS の Decision Duplication チェック 2. 過去の結論を再利用 |
+| CTX-F006 | 重複作業検知 | :yellow_circle: YELLOW | 過去セッションで同一テーマが3回以上検討されている | 過去セッション参照を提案 | 1. 過去セッションの Decision Duplication チェック 2. 過去の結論を再利用 |
 
 ---
 
@@ -542,9 +542,9 @@ flag_suppressions:
 | CTX-F001 が頻発 | SLIM_CONTEXT の自動発動閾値を70%に引き下げ |
 | CTX-F002 が頻発 | セッション分割の習慣化を推奨 |
 
-### 8.3 ARIS 連携
+### 8.3 フラグ統計フィードバック
 
-フラグ統計は ARIS の自己学習メカニズムにフィードバック:
+フラグ統計は継続的改善のためにフィードバック:
 
 - **成功パターン**: フラグが発火し、ユーザーが操作を中止した = 正しい検知
 - **失敗パターン**: フラグが発火したが、ユーザーが常にオーバーライドする = 過検知の可能性
@@ -554,7 +554,7 @@ flag_suppressions:
 フラグ発火 → ユーザー応答 → パターン蓄積
     |              |              |
     v              v              v
-flags.jsonl    response      ARIS辞書
+flags.jsonl    response      パターン辞書
                 tracking     (success/failure
                              pattern dictionary)
 ```
@@ -635,7 +635,7 @@ flags.jsonl    response      ARIS辞書
 |------|------|
 | GREEN フラグが1週間に10回以上発火 | GREEN -> YELLOW |
 | YELLOW フラグのユーザーオーバーライド率が90%以上 | レベル維持（過検知の調査） |
-| RED フラグがバイパスされた（設定変更による） | ARIS に自動記録 |
+| RED フラグがバイパスされた（設定変更による） | インシデントログに自動記録 |
 
 ### フラグレベル降格基準
 
@@ -647,5 +647,5 @@ flags.jsonl    response      ARIS辞書
 ### 禁止事項
 
 1. **RED FLAG の一括無効化は禁止** — 個別に正当な理由が必要
-2. **SEC カテゴリのフラグを ARIS 自動承認で降格させない** — 必ず手動レビュー
+2. **SEC カテゴリのフラグを自動承認で降格させない** — 必ず手動レビュー
 3. **フラグ履歴の削除は禁止** — 監査証跡として保持

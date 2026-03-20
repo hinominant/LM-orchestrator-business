@@ -1,6 +1,6 @@
 # Tool Risk Management Protocol
 
-> 3-Hook体制 + Sandbox + Permissions による多層防御。Claude Code 初心者の安全なオンボーディングを最優先に設計。
+> 4-Hook体制 + Sandbox + Permissions による多層防御。Claude Code 初心者の安全なオンボーディングを最優先に設計。
 
 ---
 
@@ -17,9 +17,10 @@ Layer 2: Permissions（deny/allow ルール）
   ├── 危険コマンドの明示的ブロック
   └── 機密ファイルの読み取り禁止
 
-Layer 3: Hooks（3-Hook体制）
+Layer 3: Hooks（4-Hook体制）
   ├── PreToolUse: リスク評価・Safety Gate
   ├── PostToolUse: 実行ログ記録
+  ├── Elicitation: MCP Elicitation インジェクションガード
   └── Stop: セッションサマリ永続化
 
 Layer 4: Guardrails（L1-L4）
@@ -81,8 +82,12 @@ Layer 4: Guardrails（L1-L4）
 | 破壊的操作 | `rm -rf /`, `rm -rf ~`, `sudo *`, `mkfs *`, `dd if=*` |
 | Git 破壊 | `git push --force *`, `git push -f *`, `git reset --hard *`, `git clean -fd *` |
 | セキュリティ | `chmod 777 *` |
-| シークレット送信 | `curl * --data *password*`, `curl * -d *secret*`, `curl * -d *token*` |
+| ネットワーク通信 | `curl *`, `wget *`, `nc *`, `ncat *`, `telnet *` |
+| macOS機密操作 | `osascript *`, `security *`, `pbcopy *`, `pbpaste *` |
+| インライン実行（バイパス防止） | `python3 -c *`, `node -e *`, `node -r *` |
 | 機密ファイル | `.env`, `.env.*`, `secrets/**`, `*.pem`, `*.key`, `credentials.json` |
+
+> **注意**: `curl *` / `wget *` 全体を deny することで、`allow: "Bash(curl -s *)"` 等のワイルドカード allow によるバイパスを防止する（SEC-011: allow リスト経由のバイパス攻撃）。`osascript *` は macOS のキーチェーンやシステム情報へのアクセスをブロックする（SEC-008/SEC-009 対策）。
 
 ### allow ルール（安全な操作を自動承認）
 
@@ -90,12 +95,13 @@ Layer 4: Guardrails（L1-L4）
 
 ---
 
-## Layer 3: 3-Hook体制
+## Layer 3: 4-Hook体制
 
 | Hook | Phase | Purpose |
 |------|-------|---------|
 | `tool-risk.js` (PreToolUse) | 実行前 | リスク評価・Safety Gate・ブロック判定 |
 | `post-tool-use.js` (PostToolUse) | 実行後 | 結果キャプチャ・ログ記録 |
+| `elicitation-guard.js` (Elicitation) | Elicitation | MCP Elicitation インジェクション検知・ブロック |
 | `stop-hook.js` (Stop) | 終了時 | セッションサマリ・メモリ永続化 |
 
 ### Risk Levels
@@ -214,6 +220,60 @@ Hook を無効化するか、HIGH のみ表示に変更可能:
 {
   "hooks": {
     "PreToolUse": []
+  }
+}
+```
+
+---
+
+## CVE 対応済みトップレベル設定
+
+settings.json のトップレベルに以下の設定を必ず含める（CVE-2025-59536, CVE-2026-21852 対応）:
+
+```json
+{
+  "enableAllProjectMcpServers": false,
+  "disableBypassPermissionsMode": "disable"
+}
+```
+
+| 設定 | 意味 | 対応 CVE |
+|------|------|---------|
+| `enableAllProjectMcpServers: false` | プロジェクトのMCPサーバーを自動有効化しない | CVE-2025-59536 |
+| `disableBypassPermissionsMode: "disable"` | Permissions バイパスモードを無効化 | CVE-2026-21852 |
+
+---
+
+## Elicitation Hook（elicitation-guard.js）
+
+MCP Elicitation インジェクション（SEC-008）への対策として、`elicitation-guard.js` が Elicitation ペイロードを検査する。
+
+### 検知パターン
+
+| パターン | 対象 |
+|---------|------|
+| コマンド実行指示 | "execute the following" / "以下のコマンドを実行" |
+| 外部URL送信指示 | curl/http + send/transmit の組み合わせ |
+| 環境変数漏洩 | process.env + output/print/log の組み合わせ |
+| シークレットパターン | APIキー・トークンパターン（AKIA, sk-, ghp_） |
+| base64 隠し指示 | base64デコード後に curl/exec/eval を含む |
+
+### settings.json での設定
+
+```json
+{
+  "hooks": {
+    "Elicitation": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/elicitation-guard.js"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
