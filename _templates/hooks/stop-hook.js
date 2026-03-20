@@ -59,6 +59,42 @@ function main() {
     }
   }
 
+  // RESUME_CONTEXT.md: コンテキスト圧縮・セッション再開時の必読ファイル
+  // Context Recovery プロトコル（_framework.md）がこのファイルを参照する
+  try {
+    const resumeFile = path.join(process.cwd(), ".claude", "RESUME_CONTEXT.md");
+    const resumeContent = [
+      "# Context Recovery — 必読",
+      "",
+      `> Session ended: ${new Date().toISOString()}`,
+      "> このファイルはセッション終了時に自動生成される。次セッション開始時に必ず読むこと。",
+      "",
+      "## ⚠️ データ保護ルール（コンテキスト状態に関わらず常に有効）",
+      "",
+      "1. **入力禁止** — 採用候補者データ・本番DB接続文字列・未公開財務情報・顧客個人情報を Claude のプロンプトに含めない",
+      "2. **本番DB禁止** — 接続先は必ず localhost / 開発DB。本番 URL は Safety Gate でブロックされる",
+      "3. **データ作業前** — データを扱うタスクの前に `/data-guard` を実行する",
+      "4. **シークレット禁止** — `.env` はコミットしない。API キー・パスワードをコードに書かない",
+      "",
+      "詳細: `_common/DATA_PROTECTION.md`",
+      "",
+      "## Context Recovery 手順",
+      "",
+      "1. このファイルを読んだ",
+      "2. `_common/DATA_PROTECTION.md` を確認した（データ作業の場合）",
+      "3. `.agents/PROJECT.md` で作業状態を把握した",
+      "4. `git log --oneline -10` + `git status` で確認した",
+      "5. 上記完了まで実装作業に入らない",
+    ].join("\n");
+    const claudeDir = path.join(process.cwd(), ".claude");
+    if (!fs.existsSync(claudeDir)) {
+      fs.mkdirSync(claudeDir, { recursive: true });
+    }
+    fs.writeFileSync(resumeFile, resumeContent, "utf8");
+  } catch (_resumeErr) {
+    // Non-critical — continue without blocking
+  }
+
   console.log(JSON.stringify({ continue: true }));
 }
 

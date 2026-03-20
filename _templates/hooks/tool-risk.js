@@ -14,6 +14,13 @@
  * Settings: ~/.claude/settings.json の hooks.PreToolUse に登録
  */
 
+// === DATA PROTECTION REMINDER ===
+// additionalContext として全ツール呼び出しに注入する。
+// コンテキスト圧縮後も毎回フレッシュに再注入されるため「忘れ」が起きない。
+const DATA_PROTECTION_REMINDER =
+  '[DATA GUARD] ⚠️ 入力禁止: 採用候補者データ・本番DB接続文字列・未公開財務情報・顧客個人情報。' +
+  'データ作業前は /data-guard を実行。詳細: _common/DATA_PROTECTION.md';
+
 // === Safety Gate Patterns (auto-block) ===
 
 const SAFETY_GATE_PATTERNS = [
@@ -281,18 +288,24 @@ process.stdin.on('end', () => {
         reason: reason,
       }));
     } else if (level === 'LOW') {
-      // Silent pass-through
-      const result = { decision: 'approve' };
-      if (additionalContext) result.additionalContext = additionalContext;
+      // Silent pass-through + DATA PROTECTION reminder (survives context compression)
+      const result = {
+        decision: 'approve',
+        additionalContext: additionalContext
+          ? additionalContext + '\n' + DATA_PROTECTION_REMINDER
+          : DATA_PROTECTION_REMINDER,
+      };
       process.stdout.write(JSON.stringify(result));
     } else {
-      // MEDIUM / HIGH: ask user
+      // MEDIUM / HIGH: ask user + DATA PROTECTION reminder
       const indicator = level === 'HIGH' ? '🔴' : '🟡';
       const result = {
         decision: 'ask_user',
         reason: indicator + ' ' + level + ' RISK: ' + reason,
+        additionalContext: additionalContext
+          ? additionalContext + '\n' + DATA_PROTECTION_REMINDER
+          : DATA_PROTECTION_REMINDER,
       };
-      if (additionalContext) result.additionalContext = additionalContext;
       process.stdout.write(JSON.stringify(result));
     }
   } catch (_e) {
