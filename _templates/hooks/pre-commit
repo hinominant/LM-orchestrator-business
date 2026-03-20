@@ -1,0 +1,96 @@
+#!/bin/bash
+# pre-commit hook — Goto Orchestrator 品質ゲート
+# このフックは git commit の直前に自動実行される。
+# テストが通らない限り、コミットは物理的にブロックされる。
+# git commit --no-verify は settings.json の deny リストで禁止済み。
+
+set -euo pipefail
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+echo ""
+echo "🔒 [pre-commit] Goto Orchestrator 品質ゲート"
+
+# -----------------------------------------------------------------------
+# 1. ドキュメントのみの変更ならテストスキップ（高速パス）
+# -----------------------------------------------------------------------
+STAGED=$(git diff --cached --name-only 2>/dev/null || true)
+
+if [ -z "$STAGED" ]; then
+  echo "  -> ステージング対象なし。通過。"
+  exit 0
+fi
+
+NON_DOC_FILES=$(echo "$STAGED" | grep -vE '\.(md|txt|rst|json|yaml|yml)$' | grep -vE '^(docs/|\.github/|CHANGELOG|LICENSE|README)' || true)
+
+if [ -z "$NON_DOC_FILES" ]; then
+  echo "  -> ドキュメントのみの変更。テストスキップ。通過。"
+  exit 0
+fi
+
+# -----------------------------------------------------------------------
+# 2. 実装ファイルの変更にテストファイルが伴っているか確認
+# -----------------------------------------------------------------------
+IMPL_CHANGED=$(echo "$STAGED" | grep -E '_templates/hooks/tool-risk\.js|scripts/auto-repair\.js' || true)
+TEST_CHANGED=$(echo "$STAGED" | grep -E 'tests/.*\.test\.(js|ts|py)$|test_.*\.py$|spec\.' || true)
+
+if [ -n "$IMPL_CHANGED" ] && [ -z "$TEST_CHANGED" ]; then
+  echo ""
+  echo -e "${RED}❌ ブロック: 実装ファイルが変更されていますが、テストファイルが含まれていません${NC}"
+  echo ""
+  echo "  変更された実装ファイル:"
+  echo "$IMPL_CHANGED" | sed 's/^/    /'
+  echo ""
+  echo "  → テストを追加または更新してから再度コミットしてください"
+  echo "  → tests/hooks/tool-risk.test.js を更新する必要がある可能性があります"
+  echo ""
+  exit 1
+fi
+
+# -----------------------------------------------------------------------
+# 3. テストスイートを実行
+# -----------------------------------------------------------------------
+echo "  -> テスト実行中..."
+
+RUN_TESTS=false
+TEST_CMD=""
+
+# Node.js (npm test)
+if [ -f "package.json" ] && node -e "const p=require('./package.json'); process.exit(p.scripts && p.scripts.test ? 0 : 1)" 2>/dev/null; then
+  RUN_TESTS=true
+  TEST_CMD="npm test"
+fi
+
+# Python (pytest)
+if [ "$RUN_TESTS" = false ] && command -v pytest >/dev/null 2>&1 && [ -d "tests" ]; then
+  RUN_TESTS=true
+  TEST_CMD="pytest tests/ -q"
+fi
+
+if [ "$RUN_TESTS" = false ]; then
+  echo "  -> テストランナーが見つかりません。テストスキップ。通過。"
+  exit 0
+fi
+
+echo "  -> 実行: $TEST_CMD"
+echo ""
+
+if $TEST_CMD; then
+  echo ""
+  echo -e "${GREEN}✅ テスト通過 — コミット許可${NC}"
+  echo ""
+  exit 0
+else
+  echo ""
+  echo -e "${RED}❌ ブロック: テストが失敗しました${NC}"
+  echo ""
+  echo "  テストをすべて通過させてから再度コミットしてください。"
+  echo "  修正後: git add <files> && git commit"
+  echo ""
+  echo -e "${YELLOW}  ⚠️  git commit --no-verify は禁止されています（settings.json deny リスト）${NC}"
+  echo ""
+  exit 1
+fi

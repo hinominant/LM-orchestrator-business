@@ -329,7 +329,21 @@ if [ "$WITH_HOOKS" = true ]; then
       fi
     fi
 
+    # Install git pre-commit hook (quality gate enforcement)
+    # This physically blocks git commit if tests fail — cannot be bypassed by AI
+    if [ -f "$CLONE_DIR/_templates/hooks/pre-commit" ]; then
+      if [ -d ".git" ]; then
+        mkdir -p .git/hooks
+        cp "$CLONE_DIR/_templates/hooks/pre-commit" ".git/hooks/pre-commit"
+        chmod +x ".git/hooks/pre-commit"
+        echo "  -> pre-commit (git hook: テスト失敗時はコミット物理ブロック)"
+      else
+        echo "  [WARN] .git not found — pre-commit hook skipped (run inside a git repo)"
+      fi
+    fi
+
     echo "  Hooks installed (4-Hook体制: PreToolUse + PostToolUse + Elicitation + Stop)"
+    echo "  + git pre-commit hook (テスト未通過でコミット物理ブロック)"
     echo "  Hooks location: .claude/hooks/ (project) + ~/.claude/hooks/ (global)"
     echo "  [NOTE] Project hooks (.claude/settings.json) are active for this project."
     echo "  To activate hooks globally across ALL projects, add the hooks config to"
