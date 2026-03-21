@@ -6,11 +6,15 @@ on:
       - 'agents/**'
       - 'agents/_base.tmpl'
 
+permissions:
+  contents: read
+
 jobs:
   drift-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # SHA pinned for supply-chain hardening (GlassWorm対策)
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Check agent SKILL.md drift
         run: |

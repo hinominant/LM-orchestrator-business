@@ -43,6 +43,11 @@ function highMsg(title, whatHappens, whyDangerous, nextSteps) {
   );
 }
 
+// === GlassWorm / Trojan Source: Unicode不可視文字検知 (SEC-014) ===
+// ゼロ幅スペース・方向制御文字などの不可視Unicode文字を検知する。
+// これらは人間のコードレビューで見えないまま悪意あるコードを混入させる攻撃手法に使われる。
+const INVISIBLE_UNICODE_RE = /[\u200B\u200C\u200D\u200E\u200F\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u034F\u061C\u115F\u1160\u17B4\u17B5\u180E\u2000-\u200A\u202A-\u202E\u2066-\u2069\u2800\u3164\uFFA0]/;
+
 // === Safety Gate Patterns (auto-block) ===
 
 const SAFETY_GATE_PATTERNS = [
@@ -591,6 +596,16 @@ function classifyRisk(toolName, toolInput) {
   if (toolName === 'Bash' && toolInput.command) {
     const cmd = toolInput.command;
 
+    // 0. GlassWorm/Trojan Source: 不可視Unicode文字の検知 (SEC-014)
+    if (INVISIBLE_UNICODE_RE.test(cmd)) {
+      return { level: 'BLOCK', reason: blockMsg(
+        '不可視Unicode文字の検出（GlassWorm/Trojan Source攻撃の疑い）',
+        'コマンドに目に見えない制御文字が含まれています。',
+        '不可視文字は悪意あるコードを隠すために使われます。400以上のGitHub/npmプロジェクトが被害を受けた「GlassWorm」攻撃と同じ手法です。',
+        'コマンドを削除して、エンジニアに報告してください。コマンドの出所を確認してください。'
+      )};
+    }
+
     // 1. Safety Gate check (auto-block)
     for (const pattern of SAFETY_GATE_PATTERNS) {
       try {
@@ -628,6 +643,17 @@ function classifyRisk(toolName, toolInput) {
 
   // Write/Edit tools - MEDIUM + file ownership context injection
   if (['Write', 'Edit', 'NotebookEdit'].includes(toolName)) {
+    // SEC-014: Write/Edit 内容の不可視Unicode文字チェック
+    const contentToCheck = (toolInput.content || '') + (toolInput.new_string || '');
+    if (INVISIBLE_UNICODE_RE.test(contentToCheck)) {
+      return { level: 'BLOCK', reason: blockMsg(
+        '書き込み内容に不可視Unicode文字を検出（GlassWorm/Trojan Source攻撃の疑い）',
+        'ファイルに書き込もうとしている内容に目に見えない制御文字が含まれています。',
+        '不可視文字はコードレビューで発見できない悪意あるコードを埋め込む手法です。AIがプロンプトインジェクション経由で混入させた可能性があります。',
+        '書き込みを中止し、エンジニアに報告してください。'
+      )};
+    }
+
     const filePath = toolInput.file_path || toolInput.notebook_path || '';
     return {
       level: 'MEDIUM',
