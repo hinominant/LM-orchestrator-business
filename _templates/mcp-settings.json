@@ -8,6 +8,18 @@
         "${POSTGRES_CONNECTION_STRING}"
       ],
       "env": {}
+    },
+    "figma": {
+      "_comment": "Figma MCP — デザイントークン抽出用。FIGMA_PERSONAL_ACCESS_TOKEN は Figma > Settings > Personal Access Tokens で発行。design-md スキルと連携して DESIGN.md を自動生成する。",
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-developer-mcp",
+        "--stdio"
+      ],
+      "env": {
+        "FIGMA_PERSONAL_ACCESS_TOKEN": "${FIGMA_PERSONAL_ACCESS_TOKEN}"
+      }
     }
   }
 }

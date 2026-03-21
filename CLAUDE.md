@@ -98,7 +98,8 @@ goto-orchestrator/
 │   ├── secret-scan.md      # シークレット検出スキャン
 │   ├── safety-check.md     # 安全性チェック
 │   ├── external-install-check.md  # 外部コンテンツ導入前セキュリティチェック
-│   └── data-guard.md       # データ保護事前チェック（個人情報・本番データ・機密情報）
+│   ├── data-guard.md       # データ保護事前チェック（個人情報・本番データ・機密情報）
+│   └── design-md.md       # Figma → DESIGN.md 変換（デザイントークン翻訳層）
 ├── _common/             # 共通プロトコル（28個）
 │   ├── AUTORUN.md
 │   ├── INTERACTION.md
@@ -222,7 +223,7 @@ goto-orchestrator/
 | `/pr-review` | 5観点（テスト/エラー/型/品質/シンプル化）の構造化レビュー |
 | `/retro` | スプリントレトロスペクティブ（Keep/Problem/Try 構造化記録） |
 
-## Skills (7)
+## Skills (9)
 
 エージェントから呼び出される再利用可能な手順スキル（原則 haiku で実行）。
 
@@ -236,6 +237,7 @@ goto-orchestrator/
 | `safety-check` | 安全性チェック（破壊的操作・セキュリティリスクの事前評価） |
 | `external-install-check` | 外部コンテンツ（MCP・npm・スクリプト）導入前の必須セキュリティチェック |
 | `data-guard` | データ保護事前チェック（個人情報・本番データ・機密情報の除外確認） |
+| `design-md` | Figma → DESIGN.md 変換（デザイントークンをエージェント参照可能な形式に変換） |
 
 ## Installation (per-project)
 

@@ -4,9 +4,9 @@
   "description": "Claude Code agent framework — Security-First design",
   "type": "commonjs",
   "scripts": {
-    "test": "node --test tests/hooks/*.test.js",
-    "test:watch": "node --test --watch tests/hooks/*.test.js",
-    "test:verbose": "node --test --reporter=spec tests/hooks/*.test.js",
+    "test": "node --test 'tests/**/*.test.js'",
+    "test:watch": "node --test --watch 'tests/**/*.test.js'",
+    "test:verbose": "node --test --reporter=spec 'tests/**/*.test.js'",
     "auto-repair": "node scripts/auto-repair.js",
     "auto-repair:dry": "node scripts/auto-repair.js --dry-run"
   },
