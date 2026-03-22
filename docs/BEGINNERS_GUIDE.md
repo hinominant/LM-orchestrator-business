@@ -368,4 +368,4 @@ AIは「質問に答えてくれる便利ツール」から「一緒に仕事を
 
 ---
 
-> このシステムは [hinominant/goto-orchestrator](https://github.com/hinominant/goto-orchestrator) で公開されています。
+> このシステムは [hinominant/LM-orchestrator-engineer](https://github.com/hinominant/LM-orchestrator-engineer) で公開されています。

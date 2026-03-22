@@ -1,6 +1,6 @@
 # Implement — 新機能追加義務ワークフロー
 
-goto-orchestrator-business に何か新しいものを追加・変更する際の**必須ワークフロー**。
+LM-orchestrator-business に何か新しいものを追加・変更する際の**必須ワークフロー**。
 テスト・ドキュメント・自動修復の3点セットを強制する。
 
 **省略・入れ替え禁止。**
@@ -96,4 +96,4 @@ if (!toolRiskContent.includes('パターンを識別できる固有文字列')) 
 - Step 1 の宣言なしに実装を始めた → 手順スキップとして `/log-failure` 自動記録
 - テストは実装前に書く（RED→GREEN 順序厳守）
 - ドキュメントは実装と同じコミットに含める（「後で書く」禁止）
-- このスキルは goto-orchestrator-business への全ての新機能追加で必須
+- このスキルは LM-orchestrator-business への全ての新機能追加で必須

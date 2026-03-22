@@ -160,7 +160,7 @@ User Request
                  ┌──────────────────────────┐
                  │  GitHub Repository        │
                  │  hinominant/              │
-                 │   goto-orchestrator       │
+                 │   LM-orchestrator-engineer       │
                  │                           │
                  │  67 agents + references   │
                  │  27+ protocols            │

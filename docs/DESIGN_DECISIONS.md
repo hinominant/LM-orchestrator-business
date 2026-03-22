@@ -339,15 +339,15 @@ Analyst と Auditor は汎用的な用途（データ分析、品質監査）に
 
 ### 決定（Decision）
 
-中央リポジトリ（`hinominant/goto-orchestrator`）を「レジストリ」として扱い、`install.sh` でプロジェクトごとにファイルをコピーする方式を採用する。
+中央リポジトリ（`hinominant/LM-orchestrator-engineer`）を「レジストリ」として扱い、`install.sh` でプロジェクトごとにファイルをコピーする方式を採用する。
 
 ```bash
 # リモートから（curl ワンライナー）
-curl -sL https://raw.githubusercontent.com/hinominant/goto-orchestrator/main/install.sh | bash -s -- --with-hooks
+curl -sL https://raw.githubusercontent.com/hinominant/LM-orchestrator-engineer/main/install.sh | bash -s -- --with-hooks
 
 # ローカルクローンから
-git clone https://github.com/hinominant/goto-orchestrator.git /tmp/goto-orchestrator
-cd your-project && /tmp/goto-orchestrator/install.sh --with-hooks
+git clone https://github.com/hinominant/LM-orchestrator-engineer.git /tmp/LM-orchestrator-engineer
+cd your-project && /tmp/LM-orchestrator-engineer/install.sh --with-hooks
 
 # 選択インストール
 ./install.sh --with-hooks nexus rally builder radar
@@ -832,7 +832,7 @@ CLAUDE.md の Core Principle に「All outputs in Japanese」を明記。`_frame
 
 GlassWorm は Unicode の制御文字やゼロ幅スペース（U+200B 等）を悪用し、「見えないコード」をリポジトリに混入させるマルウェア。400 以上の GitHub/npm/VSCode 拡張が被害を受けた実績がある。従来のコードレビューでは検出困難であり、AI エージェントがプロンプトインジェクション経由で不可視文字入りのコードを生成するリスクもある。
 
-goto-orchestrator の既存 Safety Gate は、シェルコマンドのパターンマッチによる検知だが、文字レベルの不正は検知対象外だった。
+LM-orchestrator-engineer の既存 Safety Gate は、シェルコマンドのパターンマッチによる検知だが、文字レベルの不正は検知対象外だった。
 
 ### 決定（Decision）
 

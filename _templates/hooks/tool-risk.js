@@ -3,7 +3,7 @@
 
 /**
  * Claude Code PreToolUse Hook - Tool Risk Classification + Safety Gate
- * ビジネス向け版（goto-orchestrator-business）
+ * ビジネス向け版（LM-orchestrator-business）
  *
  * エンジニア版との違い:
  * - BLOCK/HIGH メッセージを平易な日本語で説明（「なぜ危険か」「次のステップ」付き）

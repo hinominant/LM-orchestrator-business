@@ -1,0 +1,9 @@
+{"timestamp":"2026-03-20T12:50:51.933Z","session_id":"test-session-123","tool":"Read","input_summary":"/tmp/test.txt","success":true}
+{"timestamp":"2026-03-20T12:53:05.809Z","session_id":"test-123","tool":"Bash","input_summary":"ls /nonexistent","success":false}
+{"timestamp":"2026-03-20T12:53:05.836Z","session_id":"unknown","tool":"Read","input_summary":"/tmp/test.txt","success":true}
+{"timestamp":"2026-03-20T12:53:21.230Z","session_id":"test-123","tool":"Bash","input_summary":"ls /nonexistent","success":false}
+{"timestamp":"2026-03-20T12:53:21.255Z","session_id":"unknown","tool":"Read","input_summary":"/tmp/test.txt","success":true}
+{"timestamp":"2026-03-20T12:53:28.173Z","session_id":"test-session-123","tool":"Read","input_summary":"/tmp/test.txt","success":true}
+{"timestamp":"2026-03-20T13:06:20.670Z","session_id":"test123","tool":"Bash","input_summary":"git status","success":true}
+{"timestamp":"2026-03-20T13:10:48.597Z","session_id":"../evil","tool":"Bash","input_summary":"ls","success":true}
+{"timestamp":"2026-03-20T15:57:29.751Z","session_id":"test","operator":"Keiji","project":"goto-orchestrator","tool":"Bash","input_summary":"echo ${API_KEY}","success":true}

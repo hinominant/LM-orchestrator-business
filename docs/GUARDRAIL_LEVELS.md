@@ -3,7 +3,7 @@
 > **Version**: 1.0.0
 > **Status**: Stable
 > **Last Updated**: 2026-03-19
-> **Scope**: goto-orchestrator 全エージェント共通
+> **Scope**: LM-orchestrator-engineer 全エージェント共通
 
 ---
 
