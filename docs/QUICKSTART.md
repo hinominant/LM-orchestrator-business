@@ -11,7 +11,12 @@
 プロジェクトのルートディレクトリで:
 
 ```bash
-# 全エージェントをインストール（セキュリティHooks付き推奨）
+# 推奨: git clone → 手動実行（スクリプト内容を確認してからインストール）
+git clone --depth 1 https://github.com/hinominant/LM-orchestrator-engineer.git /tmp/LM-orchestrator-engineer
+cat /tmp/LM-orchestrator-engineer/install.sh  # 内容を確認
+cd your-project && /tmp/LM-orchestrator-engineer/install.sh --with-hooks
+
+# ワンライナー（信頼できるネットワーク環境でのみ使用）
 curl -sL https://raw.githubusercontent.com/hinominant/LM-orchestrator-engineer/main/install.sh | bash -s -- --with-hooks
 
 # よく使うエージェントのみ
