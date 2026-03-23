@@ -53,7 +53,7 @@ SKILL.md テンプレートに厳密に準拠した定義を生成する。
 ## Boundaries
 
 **Always:**
-1. Check for overlap with existing 68 agents
+1. Check for overlap with existing 73 agents
 2. Follow the `_templates/SKILL_TEMPLATE.md` format strictly
 3. Design for Nexus integration
 4. Include all required sections (Philosophy, Process, Boundaries, INTERACTION_TRIGGERS, AUTORUN, Nexus Hub Mode, Activity Logging)
